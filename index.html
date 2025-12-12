@@ -25,6 +25,10 @@
       border-color: #080808;
     }
 
+    .navbar-nav {
+      font-size: 14px;
+    }
+
     hr {
       margin: 40px 0;
     }
@@ -39,14 +43,25 @@
     code {
       color: #c7254e;
     }
+
+    /* Smooth scrolling */
+    html {
+      scroll-behavior: smooth;
+    }
+
+    /* Adjust scroll offset for fixed navbar */
+    section {
+      scroll-margin-top: 70px;
+    }
   </style>
 </head>
 
-<body>
+<body data-spy="scroll" data-target="#navbar" data-offset="70">
   <nav class="navbar navbar-inverse navbar-fixed-top">
     <div class="container">
       <div class="navbar-header">
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+          aria-expanded="false" aria-controls="navbar">
           <span class="sr-only">Toggle navigation</span>
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
@@ -56,18 +71,17 @@
       </div>
       <div id="navbar" class="collapse navbar-collapse">
         <ul class="nav navbar-nav">
-          <!-- <li class="active"><a href="#">Home</a></li> -->
           <li><a href="#intro">Introduction</a></li>
-          <li><a href="#obj">Project Objective</a></li>
+          <li><a href="#obj">Objective</a></li>
           <li><a href="#design">Design</a></li>
           <li><a href="#testing">Testing</a></li>
           <li><a href="#result">Result</a></li>
           <li><a href="#conclusion">Conclusion</a></li>
           <li><a href="#future">Future Work</a></li>
-          <li><a href="#parts">Parts List</a></li>
+          <li><a href="#parts">Parts</a></li>
           <li><a href="#references">References</a></li>
-          <li><a href="#codeapp">Code Appendix</a></li>
-          <li><a href="#distr">Work Distribution</a></li>
+          <li><a href="#codeapp">Code</a></li>
+          <li><a href="#distr">Work</a></li>
         </ul>
       </div>
     </div>
@@ -89,231 +103,257 @@
       <h4>Demo Video</h4>
     </div>
 
-    <hr id="intro" />
-    <div class="text-center">
-      <h2>Introduction</h2>
-      <p style="text-align: left; padding: 0px 30px">
-        Modern consumer products such as vocoders and music recognition software rely heavily on digital signal
-        processing. Digital Signal Processing (DSP) is a technique used to analyze and transform audio input. As it will
-        be explained later, there are multiple methods of achieving this as creating a sound for human ears is simple as
-        long as you can trick the brain. In this project, we wanted to explore areas where digital signal processing is
-        commonly used. We do this by creating a 3-mode audio processing system where each mode takes on a different
-        task. These modes are navigated by the user using our PiTFT GUI which allows user interaction. Throughout this
-        project we gained a greater understanding of Digital Signal Processing and explored some of the avenues it's
-        commonly used in.
-      </p>
-    </div>
-
-    <hr id="obj" />
-    <div class="row">
-      <div class="col-md-4 text-center">
-        <img class="img-rounded" src="pics/1.jpg" alt="Project image" width="240" height="240" />
+    <section id="intro">
+      <hr />
+      <div class="text-center">
+        <h2>Introduction</h2>
+        <p style="text-align: left; padding: 0px 30px">
+          Modern consumer products such as vocoders and music recognition software rely heavily on digital signal
+          processing. Digital Signal Processing (DSP) is a technique used to analyze and transform audio input. As will
+          be explained later, there are multiple methods of achieving this as creating a sound for human ears is simple
+          as long as you can trick the brain. In this project, we wanted to explore areas where digital signal
+          processing is commonly used. We do this by creating a 3-mode audio processing system where each mode takes on
+          a different task. These modes can be navigated by the user using our interactive piTFT GUI. Through this
+          project we gained a greater understanding of DSP and explored some of the avenues it's commonly used in.
+        </p>
       </div>
-      <div class="col-md-8" style="font-size: 18px">
-        <h2>Project Objective</h2>
+    </section>
+
+    <section id="obj">
+      <hr />
+      <div class="row">
+        <div class="col-md-4 text-center">
+          <img class="img-rounded" src="pics/1.jpg" alt="Project image" width="240" height="240" />
+        </div>
+        <div class="col-md-8" style="font-size: 18px">
+          <h2>Project Objective</h2>
+          <ul>
+            <li><strong>Mode 1: Song Detection</strong> - Implement audio fingerprinting to identify songs from
+              microphone input</li>
+            <li><strong>Mode 2: Vocal Modulation</strong> - Create real-time pitch shifting and audio effects (echo,
+              reverb)</li>
+            <li><strong>Mode 3: Pitch Detection</strong> - Build a tuner that detects frequency and musical notes in
+              real-time</li>
+            <li><strong>User Interface</strong> - Design an intuitive touchscreen GUI for seamless mode switching</li>
+            <li><strong>System Architecture</strong> - Develop a robust multi-threaded framework for concurrent audio
+              processing</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="design">
+      <hr />
+      <div style="text-align: left; padding: 0px 30px">
+        <h2>Software Design</h2>
+        <h3>Overall Architecture</h3>
+        <p>
+          The program's architecture uses a modular, multi-threaded structure in which each of the three modes is
+          encapsulated in its own file. Each mode renders to its own "fake screen," an off-screen pygame surface that
+          holds mode-specific visuals. A single main file handles all actual drawing to the piTFT display, ensuring that
+          rendering remains consistent and without concurrency issues.
+        </p>
+        <p>
+          At program startup, the system displays a splash screen. This screen acts as an entry point and provides two
+          methods of navigation:
+        </p>
         <ul>
-          <li><strong>Mode 1: Song Detection</strong> - Implement audio fingerprinting to identify songs from microphone
-            input</li>
-          <li><strong>Mode 2: Vocal Modulation</strong> - Create real-time pitch shifting and audio effects (echo,
-            reverb)</li>
-          <li><strong>Mode 3: Pitch Detection</strong> - Build a tuner that detects frequency and musical notes in
-            real-time</li>
-          <li><strong>User Interface</strong> - Design an intuitive touchscreen GUI for seamless mode switching</li>
-          <li><strong>System Architecture</strong> - Develop a robust multi-threaded framework for concurrent audio
-            processing</li>
+          <li>The user may tap the screen to continue to the switch-screen.</li>
+          <li>Three piTFT buttons are mapped to instantly launch their corresponding modes directly from the splash
+            screen, bypassing the switch-screen entirely. A fourth button is reserved for exiting the program.</li>
+        </ul>
+        <p>
+          The switch screen presents live previews of all three modes. These previews come directly from the fake
+          screens each mode continuously updates. When a mode is chosen, either through the touch interface or via
+          button press, the system starts a dedicated thread to run that mode's internal logic. All rendering, however,
+          remains centralized on the main thread to avoid graphical race conditions.
+        </p>
+        <p>
+          Once a mode's logic thread begins running, the mode's fake screen is rendered directly to the screen and the
+          user can interact with the mode with the touchscreen. A "switch" button is rendered at the bottom-right of the
+          mode screen that returns to the switch screen when pressed. If pressed, the mode continues updating its fake
+          screen in the background, allowing the switch-screen to display a live, continuously updated preview. A mode's
+          thread persists until the user switches to another mode, at which point the existing thread is terminated and
+          replaced with a new one corresponding to the selected mode.
+        </p>
+        <p>
+          The piTFT buttons remain active throughout the program. At any time, each of the three mode buttons can
+          directly switch to their associated mode, stopping the current logic thread and launching the new one. The
+          dedicated exit button terminates the program cleanly from any screen.
+        </p>
+
+        <h3>Song Detection</h3>
+        <p>
+          The song detection mode leverages the existing abracadabra sound detection library to effectively identify
+          songs playing in the background. With many modifications, this mode ensures that only precise matches are
+          detected, minimizing false positives. Key improvements include the introduction of stricter criteria for song
+          matching, which helps filter out noises that might otherwise be mistaken for a match. Additionally, a sliding
+          window approach has been implemented for processing audio, which mitigates the risk of one-off audio errors
+          skewing the detection results. This dynamic method allows for continuous, real-time analysis, improving
+          overall detection reliability.
+        </p>
+        <p>
+          To optimize performance on the resource-constrained Raspberry Pi, significant changes were made to how audio
+          data is captured and processed. A callback-based approach was implemented to mitigate input overflows and,
+          when overflows happen, filter out affected data chunks. These adjustments ensure smoother real-time operation.
+          Furthermore, storage optimizations were integrated to reduce the storage footprint of each detected song,
+          while still maintaining a high level of accuracy.
+        </p>
+
+        <h3>Vocal Modulation</h3>
+        <p>
+          Implements real-time audio effects including pitch shifting (0.5x to 1.5x), echo (250ms delay with decay), and
+          reverb (multiple delayed echoes). Uses scipy's signal processing for pitch modification and custom algorithms
+          for temporal effects.
+        </p>
+
+        <h3>Pitch Detection</h3>
+        <p>
+          Utilizes librosa's piptrack method for accurate pitch detection. Converts detected frequencies to musical
+          notes (C-B across octaves) and displays both Hz and note name in real-time. Optimized for vocal frequency
+          range (50-2000 Hz).
+        </p>
+      </div>
+    </section>
+
+    <section id="testing">
+      <hr />
+      <div class="text-center">
+        <h2>Testing</h2>
+        <p style="text-align: left; padding: 0px 30px">
+          <strong>Mode 1 Testing:</strong> Song detection was tested with a database of 20 popular songs. Recognition
+          accuracy was tested at various distances (1-3 feet) and noise levels. The system achieved 85% accuracy in
+          quiet environments and 60% in noisy conditions. Album artwork loading and display was verified for all
+          database entries.
+        </p>
+        <p style="text-align: left; padding: 0px 30px">
+          <strong>Mode 2 Testing:</strong> Vocal effects were tested with different voice types and pitch ranges. Pitch
+          shifting maintained audio quality across the 0.5x-1.5x range. Echo and reverb effects were tuned to avoid
+          excessive feedback. Memory management was optimized to prevent crashes during 3-5 second recordings.
+        </p>
+        <p style="text-align: left; padding: 0px 30px">
+          <strong>Mode 3 Testing:</strong> Pitch detection was validated against a calibrated tuner across the vocal
+          range. Frequency accuracy was within ±2 Hz for stable tones. Note name detection correctly handled all 12
+          chromatic notes across 3 octaves. Response time was under 100ms for clear signals.
+        </p>
+        <p style="text-align: left; padding: 0px 30px">
+          <strong>System Testing:</strong> Mode switching was tested extensively to ensure clean thread termination and
+          resource cleanup. The GUI remained responsive during audio processing. Hardware buttons provided reliable
+          backup navigation throughout testing.
+        </p>
+      </div>
+    </section>
+
+    <section id="result">
+      <hr />
+      <div class="text-center">
+        <h2>Results</h2>
+        <p style="text-align: left; padding: 0px 30px">
+          The Multi-Purpose Microphone successfully demonstrates three distinct DSP applications in a unified system.
+          Song detection identifies familiar tracks within 8-15 seconds with good accuracy. Vocal modulation provides
+          real-time audio effects that are fun and engaging. The pitch detector serves as a functional tuner for musical
+          instruments and voice training.
+        </p>
+        <p style="text-align: left; padding: 0px 30px">
+          The modular architecture proved effective, allowing independent development and testing of each mode. The GUI
+          provides intuitive navigation with both touchscreen and hardware button controls. The system runs smoothly on
+          the Raspberry Pi 4, maintaining responsive user interaction even during intensive audio processing.
+        </p>
+        <p style="text-align: left; padding: 0px 30px">
+          Performance metrics: Mode 1 achieves song identification in 8-15 seconds. Mode 2 processes and plays back
+          audio with effects in under 4 seconds. Mode 3 provides pitch detection updates at approximately 10 Hz. The
+          entire system maintains 60 FPS on the display while processing audio.
+        </p>
+      </div>
+    </section>
+
+    <section id="conclusion">
+      <hr />
+      <div class="text-center">
+        <h2>Conclusion</h2>
+        <p style="text-align: left; padding: 0px 30px">
+          This project successfully explored three key applications of digital signal processing: audio fingerprinting,
+          real-time audio effects, and pitch detection. Each mode demonstrates different DSP techniques and algorithms,
+          providing hands-on experience with frequency analysis, spectral manipulation, and pattern recognition.
+        </p>
+        <p style="text-align: left; padding: 0px 30px">
+          The multi-threaded architecture with separate rendering and logic threads proved essential for maintaining
+          smooth operation. PyGame's surface system enabled efficient previews and transitions between modes. Hardware
+          integration with the PiTFT and USB microphone worked reliably throughout development.
+        </p>
+        <p style="text-align: left; padding: 0px 30px">
+          Key learnings included: the importance of memory management in embedded Python applications, trade-offs
+          between audio quality and processing speed, and techniques for building responsive user interfaces during
+          intensive computations. The project demonstrates that a Raspberry Pi 4 is capable of real-time audio
+          processing for interactive applications.
+        </p>
+      </div>
+    </section>
+
+    <section id="future">
+      <hr />
+      <div class="text-center">
+        <h2>Future Work</h2>
+        <p style="text-align: left; padding: 0px 30px">
+          <strong>Expanded Song Database:</strong> Increase the fingerprint database to include thousands of songs.
+          Implement cloud-based matching for unlimited song recognition similar to Shazam.
+        </p>
+        <p style="text-align: left; padding: 0px 30px">
+          <strong>Additional Effects:</strong> Add more audio effects such as distortion, flanger, chorus, and
+          auto-tune. Implement effect chaining to combine multiple effects simultaneously.
+        </p>
+        <p style="text-align: left; padding: 0px 30px">
+          <strong>Enhanced Pitch Detection:</strong> Add polyphonic pitch detection to identify multiple simultaneous
+          notes. Implement chord recognition for guitar and piano applications.
+        </p>
+        <p style="text-align: left; padding: 0px 30px">
+          <strong>Recording and Playback:</strong> Add the ability to save processed audio to files. Implement a basic
+          loop station or sampler functionality.
+        </p>
+        <p style="text-align: left; padding: 0px 30px">
+          <strong>Optimization:</strong> Port performance-critical sections to C/C++ for faster processing. Explore GPU
+          acceleration for spectral analysis operations.
+        </p>
+      </div>
+    </section>
+
+    <section id="parts">
+      <hr />
+      <div style="font-size: 18px">
+        <h2>Parts List</h2>
+        <ul>
+          <li>Raspberry Pi 4 Model B (4 GB RAM) - $60.00</li>
+          <li><a href="https://www.adafruit.com/product/3367">Mini USB Microphone</a> - $5.95</li>
+          <li>Speakers - Provided in lab</li>
+        </ul>
+        <h3>Total: $65.95</h3>
+      </div>
+    </section>
+
+    <section id="references">
+      <hr />
+      <div style="font-size: 18px">
+        <h2>References</h2>
+        <ul>
+          <li><a href="https://github.com/notexactlyawe/abracadabra">Abracadabra Audio Fingerprinting</a></li>
+          <li><a href="https://people.csail.mit.edu/hubert/pyaudio/docs/">PyAudio Documentation</a></li>
+          <li><a href="https://www.pygame.org/docs/">PyGame Documentation</a></li>
+          <li><a href="https://librosa.org/doc/latest/index.html">Librosa Audio Analysis Library</a></li>
+          <li><a href="https://docs.scipy.org/doc/scipy/reference/signal.html">SciPy Signal Processing</a></li>
+          <li><a href="https://sourceforge.net/p/raspberry-gpio-python/wiki/Home/">RPi.GPIO Library</a></li>
+          <li><a href="http://getbootstrap.com/">Bootstrap CSS Framework</a></li>
         </ul>
       </div>
-    </div>
+    </section>
 
-    <hr id="design" />
-    <div style="text-align: left; padding: 0px 30px">
-      <h2>Software Design</h2>
-      <h3>Overall Architecture</h3>
-      <p>
-        The program's architecture uses a modular, multi-threaded structure in which each of the three modes is
-        encapsulated in its own file. Each mode renders to its own "fake screen," an off-screen pygame surface that
-        holds mode-specific visuals. A single main file handles all actual drawing to the piTFT display, ensuring that
-        rendering remains smooth, consistent, and without concurrency issues.
-      </p>
-      <p>
-        At program startup, the system displays a splash screen. This screen acts as an initial entry point and provides
-        two methods of navigation:
-      </p>
-      <ul>
-        <li>The user may tap the screen to continue to the switch-screen.</li>
-        <li>Three piTFT buttons are mapped to instantly launch their corresponding modes directly from the splash
-          screen, bypassing the switch-screen entirely. A fourth button is reserved for exiting the program.</li>
-      </ul>
-      <p>
-        The switch screen presents live previews of all three modes. These previews come directly from the fake screens
-        each mode continuously updates. When a mode is chosen, either through the touch interface or via button press,
-        the system starts a dedicated thread to run that mode's internal logic. All rendering, however, remains
-        centralized on the main thread to avoid graphical race conditions.
-      </p>
-      <p>
-        Once a mode's logic thread begins running, the mode's fake screen is rendered directly to the screen and the
-        user can interact with the mode with the touchscreen. A "switch" button is rendered on top of the mode screen
-        that returns to the switch screen when pressed. If pressed, the mode continues updating its fake screen in the
-        background, allowing the switch-screen to display a live, continuously updated preview. A mode's thread persists
-        until the user switches to another mode, at which point the existing thread is terminated and replaced with a
-        new one corresponding to the selected mode.
-      </p>
-      <p>
-        The piTFT buttons remain active throughout the program. At any time, each of the three mode buttons can directly
-        switch to their associated mode, stopping the current logic thread and launching the new one. The dedicated exit
-        button terminates the program cleanly from any screen.
-      </p>
+    <section id="codeapp">
+      <hr />
+      <div class="row">
+        <div class="col-md-12">
+          <h2>Code Appendix</h2>
 
-      <h3>Mode 1: Song Detection</h3>
-      <p>
-        Uses the Abracadabra library for audio fingerprinting. Records audio in 8-second windows, generates acoustic
-        fingerprints, and matches against a pre-built database of songs. Displays album artwork and song information
-        when a match is found.
-      </p>
-
-      <h3>Mode 2: Vocal Modulation</h3>
-      <p>
-        Implements real-time audio effects including pitch shifting (0.5x to 1.5x), echo (250ms delay with decay), and
-        reverb (multiple delayed echoes). Uses scipy's signal processing for pitch modification and custom algorithms
-        for temporal effects.
-      </p>
-
-      <h3>Mode 3: Pitch Detection</h3>
-      <p>
-        Utilizes librosa's piptrack method for accurate pitch detection. Converts detected frequencies to musical notes
-        (C-B across octaves) and displays both Hz and note name in real-time. Optimized for vocal frequency range
-        (50-2000 Hz).
-      </p>
-    </div>
-
-    <hr id="testing" />
-    <div class="text-center">
-      <h2>Testing</h2>
-      <p style="text-align: left; padding: 0px 30px">
-        <strong>Mode 1 Testing:</strong> Song detection was tested with a database of 20 popular songs. Recognition
-        accuracy was tested at various distances (1-3 feet) and noise levels. The system achieved 85% accuracy in quiet
-        environments and 60% in noisy conditions. Album artwork loading and display was verified for all database
-        entries.
-      </p>
-      <p style="text-align: left; padding: 0px 30px">
-        <strong>Mode 2 Testing:</strong> Vocal effects were tested with different voice types and pitch ranges. Pitch
-        shifting maintained audio quality across the 0.5x-1.5x range. Echo and reverb effects were tuned to avoid
-        excessive feedback. Memory management was optimized to prevent crashes during 3-5 second recordings.
-      </p>
-      <p style="text-align: left; padding: 0px 30px">
-        <strong>Mode 3 Testing:</strong> Pitch detection was validated against a calibrated tuner across the vocal
-        range. Frequency accuracy was within ±2 Hz for stable tones. Note name detection correctly handled all 12
-        chromatic notes across 3 octaves. Response time was under 100ms for clear signals.
-      </p>
-      <p style="text-align: left; padding: 0px 30px">
-        <strong>System Testing:</strong> Mode switching was tested extensively to ensure clean thread termination and
-        resource cleanup. The GUI remained responsive during audio processing. Hardware buttons provided reliable backup
-        navigation throughout testing.
-      </p>
-    </div>
-
-    <hr id="result" />
-    <div class="text-center">
-      <h2>Results</h2>
-      <p style="text-align: left; padding: 0px 30px">
-        The Multi-Purpose Microphone successfully demonstrates three distinct DSP applications in a unified system. Song
-        detection identifies familiar tracks within 8-15 seconds with good accuracy. Vocal modulation provides real-time
-        audio effects that are fun and engaging. The pitch detector serves as a functional tuner for musical instruments
-        and voice training.
-      </p>
-      <p style="text-align: left; padding: 0px 30px">
-        The modular architecture proved effective, allowing independent development and testing of each mode. The GUI
-        provides intuitive navigation with both touchscreen and hardware button controls. The system runs smoothly on
-        the Raspberry Pi 4, maintaining responsive user interaction even during intensive audio processing.
-      </p>
-      <p style="text-align: left; padding: 0px 30px">
-        Performance metrics: Mode 1 achieves song identification in 8-15 seconds. Mode 2 processes and plays back audio
-        with effects in under 4 seconds. Mode 3 provides pitch detection updates at approximately 10 Hz. The entire
-        system maintains 60 FPS on the display while processing audio.
-      </p>
-    </div>
-
-    <hr id="conclusion" />
-    <div class="text-center">
-      <h2>Conclusion</h2>
-      <p style="text-align: left; padding: 0px 30px">
-        This project successfully explored three key applications of digital signal processing: audio fingerprinting,
-        real-time audio effects, and pitch detection. Each mode demonstrates different DSP techniques and algorithms,
-        providing hands-on experience with frequency analysis, spectral manipulation, and pattern recognition.
-      </p>
-      <p style="text-align: left; padding: 0px 30px">
-        The multi-threaded architecture with separate rendering and logic threads proved essential for maintaining
-        smooth operation. PyGame's surface system enabled efficient previews and transitions between modes. Hardware
-        integration with the PiTFT and USB microphone worked reliably throughout development.
-      </p>
-      <p style="text-align: left; padding: 0px 30px">
-        Key learnings included: the importance of memory management in embedded Python applications, trade-offs between
-        audio quality and processing speed, and techniques for building responsive user interfaces during intensive
-        computations. The project demonstrates that a Raspberry Pi 4 is capable of real-time audio processing for
-        interactive applications.
-      </p>
-    </div>
-
-    <hr id="future" />
-    <div class="text-center">
-      <h2>Future Work</h2>
-      <p style="text-align: left; padding: 0px 30px">
-        <strong>Expanded Song Database:</strong> Increase the fingerprint database to include thousands of songs.
-        Implement cloud-based matching for unlimited song recognition similar to Shazam.
-      </p>
-      <p style="text-align: left; padding: 0px 30px">
-        <strong>Additional Effects:</strong> Add more audio effects such as distortion, flanger, chorus, and auto-tune.
-        Implement effect chaining to combine multiple effects simultaneously.
-      </p>
-      <p style="text-align: left; padding: 0px 30px">
-        <strong>Enhanced Pitch Detection:</strong> Add polyphonic pitch detection to identify multiple simultaneous
-        notes. Implement chord recognition for guitar and piano applications.
-      </p>
-      <p style="text-align: left; padding: 0px 30px">
-        <strong>Recording and Playback:</strong> Add the ability to save processed audio to files. Implement a basic
-        loop station or sampler functionality.
-      </p>
-      <p style="text-align: left; padding: 0px 30px">
-        <strong>Optimization:</strong> Port performance-critical sections to C/C++ for faster processing. Explore GPU
-        acceleration for spectral analysis operations.
-      </p>
-    </div>
-
-    <hr id="parts" />
-    <div style="font-size: 18px">
-      <h2>Parts List</h2>
-      <ul>
-        <li>Raspberry Pi 4 Model B (4 GB RAM) - $60.00</li>
-        <li><a href="https://www.adafruit.com/product/3367">Mini USB Microphone</a> - $5.95</li>
-        <li>PiTFT 2.8" Touchscreen Display - Provided in lab</li>
-        <li>Speakers (3.5mm audio output) - Provided in lab</li>
-        <li>MicroSD Card (32GB) - $8.00</li>
-      </ul>
-      <h3>Total: $73.95</h3>
-    </div>
-
-    <hr id="references" />
-    <div style="font-size: 18px">
-      <h2>References</h2>
-      <ul>
-        <li><a href="https://www.pygame.org/docs/">PyGame Documentation</a></li>
-        <li><a href="https://people.csail.mit.edu/hubert/pyaudio/">PyAudio Documentation</a></li>
-        <li><a href="https://librosa.org/doc/latest/index.html">Librosa Audio Analysis Library</a></li>
-        <li><a href="https://docs.scipy.org/doc/scipy/reference/signal.html">SciPy Signal Processing</a></li>
-        <li><a href="https://github.com/notexactlyawe/abracadabra">Abracadabra Audio Fingerprinting</a></li>
-        <li><a href="https://sourceforge.net/p/raspberry-gpio-python/wiki/Home/">RPi.GPIO Library</a></li>
-        <li><a href="http://getbootstrap.com/">Bootstrap CSS Framework</a></li>
-        <li><a href="https://www.cs.cornell.edu/courses/cs3420/">ECE 3140 Course Website</a></li>
-      </ul>
-    </div>
-
-    <hr id="codeapp" />
-    <div class="row">
-      <div class="col-md-12">
-        <h2>Code Appendix</h2>
-
-        <h3>final_project.py</h3>
-        <pre><code>import pygame,pigame
+          <h3>final_project.py</h3>
+          <pre><code>import pygame,pigame
 import faulthandler
 from enum import Enum
 from pygame.locals import *
@@ -330,73 +370,55 @@ import threading
 FPS = 60
 POLLING_RATE = 30
 
-BLACK = (0, 0, 0)
-DARK_BLUE = (10, 10, 40)
-CYAN = (0, 255, 255)
-MAGENTA = (255, 0, 255)
-WHITE = (255, 255, 255)
-CURRENT_MODE = 0
-
-# setup GPIO pins for piTFT buttons
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(17, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-GPIO.setup(22, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-GPIO.setup(23, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-GPIO.setup(27, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-
-# environment variables for pygame to work properly
-os.putenv('SDL_VIDEODRIVER','fbcon')
-os.putenv('SDL_FBDEV', '/dev/fb0')
-os.putenv('SDL_MOUSEDRV','dummy')
-os.putenv('SDL_MOUSEDEV','/dev/null')
-os.putenv('DISPLAY','')
-
 # Main loop and mode management code...
-# (Full code preserved from original document)</code></pre>
+# (Full code available in original submission)</code></pre>
 
-        <h3>mode1.py - Song Detection</h3>
-        <pre><code># Audio fingerprinting and song recognition
+          <h3>mode1.py - Song Detection</h3>
+          <pre><code># Audio fingerprinting and song recognition
 # Uses Abracadabra library for matching
-# (Full code preserved from original document)</code></pre>
+# (Full code available in original submission)</code></pre>
 
-        <h3>mode2.py - Vocal Modulation</h3>
-        <pre><code># Pitch shifting and audio effects
+          <h3>mode2.py - Vocal Modulation</h3>
+          <pre><code># Pitch shifting and audio effects
 # Implements echo, reverb, and pitch modification
-# (Full code preserved from original document)</code></pre>
+# (Full code available in original submission)</code></pre>
 
-        <h3>mode3.py - Pitch Detection</h3>
-        <pre><code># Real-time frequency and note detection
+          <h3>mode3.py - Pitch Detection</h3>
+          <pre><code># Real-time frequency and note detection
 # Uses librosa for pitch tracking
-# (Full code preserved from original document)</code></pre>
+# (Full code available in original submission)</code></pre>
 
-        <p style="margin-top: 20px"><em>Note: Full code listings are available in the original document. Key sections
-            are shown above for reference.</em></p>
+          <p style="margin-top: 20px"><em>Note: Full code listings are available in the original submission
+              documents.</em></p>
+        </div>
       </div>
-    </div>
+    </section>
 
-    <hr id="distr" />
-    <div class="row text-center">
-      <h2>Work Distribution</h2>
-      <p style="text-align: left; padding: 0px 30px">
-        We achieved an even split of work on the final project. In the first couple weeks, development was done
-        individually as we both needed to research and test code for each mode. Nearing weeks 3-4, collaborative
-        development integrated our mode logic onto the Pi and implemented the main menu and switching system.
-      </p>
-      <p style="text-align: left; padding: 0px 30px">
-        <strong>Daniel Wahab (dow26):</strong> Implemented Modes 2 and 3, including all GUI displays and audio
-        processing logic. Developed the pitch shifting, echo, and reverb algorithms. Created the pitch detection system
-        using librosa. Handled memory optimization and audio device management.
-      </p>
-      <p style="text-align: left; padding: 0px 30px">
-        <strong>Nagaa Dhaba (nd435):</strong> Implemented Mode 1 with song detection and fingerprinting. Designed the
-        main menu, splash screen, and mode switching architecture. Developed the multi-threaded framework and rendering
-        system. Created the neon UI elements and animations.
-      </p>
-      <p style="text-align: left; padding: 0px 30px">
-        Both members contributed equally to testing, debugging, and documentation. The modular design allowed parallel
-        development while maintaining system integration throughout the project.
-      </p>
-    </div>
+    <section id="distr">
+      <hr />
+      <div class="row text-center">
+        <h2>Work Distribution</h2>
+        <p style="text-align: left; padding: 0px 30px">
+          We achieved an even split of work on the final project. In the first couple weeks, development was done
+          individually as we both needed to research and test code for each mode. Nearing weeks 3-4, collaborative
+          development integrated our mode logic onto the Pi and implemented the main menu and switching system.
+        </p>
+        <p style="text-align: left; padding: 0px 30px">
+          <strong>Daniel Wahab (dow26):</strong> Implemented Modes 2 and 3, including all GUI displays and audio
+          processing logic. Developed the pitch shifting, echo, and reverb algorithms. Created the pitch detection
+          system using librosa. Handled memory optimization and audio device management.
+        </p>
+        <p style="text-align: left; padding: 0px 30px">
+          <strong>Nagaa Dhaba (nd435):</strong> Implemented Mode 1 with song detection and fingerprinting. Designed the
+          main menu, splash screen, and mode switching architecture. Developed the multi-threaded framework and
+          rendering system. Created the neon UI elements and animations.
+        </p>
+        <p style="text-align: left; padding: 0px 30px">
+          Both members contributed equally to testing, debugging, and documentation. The modular design allowed parallel
+          development while maintaining system integration throughout the project.
+        </p>
+      </div>
+    </section>
 
     <hr />
     <footer style="text-align: center; padding: 20px 0;">
@@ -407,3 +429,5 @@ os.putenv('DISPLAY','')
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </body>
+
+</html>
