@@ -5,6 +5,8 @@
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Multi-Purpose Microphone Project" />
+  <meta name="author" content="Daniel Wahab and Nagaa Dhaba" />
   <title>Multi-Purpose Microphone Project</title>
   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
   <style>
@@ -36,7 +38,7 @@
       padding: 15px;
       border-radius: 4px;
       overflow-x: auto;
-      font-size: 11px;
+      font-size: 12px;
     }
 
     code {
@@ -57,9 +59,12 @@
   <nav class="navbar navbar-inverse navbar-fixed-top">
     <div class="container">
       <div class="navbar-header">
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+          aria-expanded="false" aria-controls="navbar">
           <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
         </button>
         <a class="navbar-brand" href="#">Multi-Purpose Microphone</a>
       </div>
@@ -84,7 +89,10 @@
   <div class="container">
     <div class="starter-template">
       <h1>Multi-Purpose Microphone</h1>
-      <p class="lead">Fall 2025<br />Project by: Daniel Wahab (dow26) and Nagaa Dhaba (nd435)</p>
+      <p class="lead">
+        Fall 2025<br />
+        Project by: Daniel Wahab (dow26) and Nagaa Dhaba (nd435)
+      </p>
     </div>
 
     <hr />
@@ -98,22 +106,24 @@
       <hr />
       <div class="text-center">
         <h2>Introduction</h2>
-        <p style="text-align: left; padding: 0px 30px">Modern consumer products such as vocoders and music recognition
-          software rely heavily on digital signal processing. Digital Signal Processing (DSP) is a technique used to
-          analyze and transform audio input. As will be explained later, there are multiple methods of achieving this as
-          creating a sound for human ears is simple as long as you can trick the brain. In this project, we wanted to
-          explore areas where digital signal processing is commonly used. We do this by creating a 3-mode audio
-          processing system where each mode takes on a different task. These modes can be navigated by the user using
-          our interactive piTFT GUI. Through this project we gained a greater understanding of DSP and explored some of
-          the avenues it's commonly used in.</p>
+        <p style="text-align: left; padding: 0px 30px">
+          Modern consumer products such as vocoders and music recognition software rely heavily on digital signal
+          processing. Digital Signal Processing (DSP) is a technique used to analyze and transform audio input. As will
+          be explained later, there are multiple methods of achieving this as creating a sound for human ears is simple
+          as long as you can trick the brain. In this project, we wanted to explore areas where digital signal
+          processing is commonly used. We do this by creating a 3-mode audio processing system where each mode takes on
+          a different task. These modes can be navigated by the user using our interactive piTFT GUI. Through this
+          project we gained a greater understanding of DSP and explored some of the avenues it's commonly used in.
+        </p>
       </div>
     </section>
 
     <section id="obj">
       <hr />
       <div class="row">
-        <div class="col-md-4 text-center"><img class="img-rounded" src="pics/1.jpg" alt="Project image" width="240"
-            height="240" /></div>
+        <div class="col-md-4 text-center">
+          <img class="img-rounded" src="pics/1.jpg" alt="Project image" width="240" height="240" />
+        </div>
         <div class="col-md-8" style="font-size: 18px">
           <h2>Project Objective</h2>
           <ul>
@@ -136,51 +146,72 @@
       <div style="text-align: left; padding: 0px 30px">
         <h2>Software Design</h2>
         <h3>Overall Architecture</h3>
-        <p>The program's architecture uses a modular, multi-threaded structure in which each of the three modes is
+        <p>
+          The program's architecture uses a modular, multi-threaded structure in which each of the three modes is
           encapsulated in its own file. Each mode renders to its own "fake screen," an off-screen pygame surface that
           holds mode-specific visuals. A single main file handles all actual drawing to the piTFT display, ensuring that
-          rendering remains consistent and without concurrency issues.</p>
-        <p>At program startup, the system displays a splash screen. This screen acts as an entry point and provides two
-          methods of navigation:</p>
+          rendering remains consistent and without concurrency issues.
+        </p>
+        <p>
+          At program startup, the system displays a splash screen. This screen acts as an entry point and provides two
+          methods of navigation:
+        </p>
         <ul>
           <li>The user may tap the screen to continue to the switch-screen.</li>
           <li>Three piTFT buttons are mapped to instantly launch their corresponding modes directly from the splash
             screen, bypassing the switch-screen entirely. A fourth button is reserved for exiting the program.</li>
         </ul>
-        <p>The switch screen presents live previews of all three modes. These previews come directly from the fake
+        <p>
+          The switch screen presents live previews of all three modes. These previews come directly from the fake
           screens each mode continuously updates. When a mode is chosen, either through the touch interface or via
           button press, the system starts a dedicated thread to run that mode's internal logic. All rendering, however,
-          remains centralized on the main thread to avoid graphical race conditions.</p>
-        <p>Once a mode's logic thread begins running, the mode's fake screen is rendered directly to the screen and the
+          remains centralized on the main thread to avoid graphical race conditions.
+        </p>
+        <p>
+          Once a mode's logic thread begins running, the mode's fake screen is rendered directly to the screen and the
           user can interact with the mode with the touchscreen. A "switch" button is rendered at the bottom-right of the
           mode screen that returns to the switch screen when pressed. If pressed, the mode continues updating its fake
           screen in the background, allowing the switch-screen to display a live, continuously updated preview. A mode's
           thread persists until the user switches to another mode, at which point the existing thread is terminated and
-          replaced with a new one corresponding to the selected mode.</p>
-        <p>The piTFT buttons remain active throughout the program. At any time, each of the three mode buttons can
+          replaced with a new one corresponding to the selected mode.
+        </p>
+        <p>
+          The piTFT buttons remain active throughout the program. At any time, each of the three mode buttons can
           directly switch to their associated mode, stopping the current logic thread and launching the new one. The
-          dedicated exit button terminates the program cleanly from any screen.</p>
+          dedicated exit button terminates the program cleanly from any screen.
+        </p>
+
         <h3>Song Detection</h3>
-        <p>The song detection mode leverages the existing abracadabra sound detection library to effectively identify
+        <p>
+          The song detection mode leverages the existing abracadabra sound detection library to effectively identify
           songs playing in the background. With many modifications, this mode ensures that only precise matches are
           detected, minimizing false positives. Key improvements include the introduction of stricter criteria for song
           matching, which helps filter out noises that might otherwise be mistaken for a match. Additionally, a sliding
           window approach has been implemented for processing audio, which mitigates the risk of one-off audio errors
           skewing the detection results. This dynamic method allows for continuous, real-time analysis, improving
-          overall detection reliability.</p>
-        <p>To optimize performance on the resource-constrained Raspberry Pi, significant changes were made to how audio
+          overall detection reliability.
+        </p>
+        <p>
+          To optimize performance on the resource-constrained Raspberry Pi, significant changes were made to how audio
           data is captured and processed. A callback-based approach was implemented to mitigate input overflows and,
           when overflows happen, filter out affected data chunks. These adjustments ensure smoother real-time operation.
           Furthermore, storage optimizations were integrated to reduce the storage footprint of each detected song,
-          while still maintaining a high level of accuracy.</p>
+          while still maintaining a high level of accuracy.
+        </p>
+
         <h3>Vocal Modulation</h3>
-        <p>Implements real-time audio effects including pitch shifting (0.5x to 1.5x), echo (250ms delay with decay),
-          and reverb (multiple delayed echoes). Uses scipy's signal processing for pitch modification and custom
-          algorithms for temporal effects.</p>
+        <p>
+          Implements real-time audio effects including pitch shifting (0.5x to 1.5x), echo (250ms delay with decay), and
+          reverb (multiple delayed echoes). Uses scipy's signal processing for pitch modification and custom algorithms
+          for temporal effects.
+        </p>
+
         <h3>Pitch Detection</h3>
-        <p>Utilizes librosa's piptrack method for accurate pitch detection. Converts detected frequencies to musical
+        <p>
+          Utilizes librosa's piptrack method for accurate pitch detection. Converts detected frequencies to musical
           notes (C-B across octaves) and displays both Hz and note name in real-time. Optimized for vocal frequency
-          range (50-2000 Hz).</p>
+          range (50-2000 Hz).
+        </p>
       </div>
     </section>
 
@@ -189,20 +220,12 @@
       <div class="text-center">
         <h2>Testing</h2>
         <p style="text-align: left; padding: 0px 30px"><strong>Mode 1 Testing:</strong> Song detection was tested with a
-          database of 20 popular songs. Recognition accuracy was tested at various distances (1-3 feet) and noise
-          levels. The system achieved 85% accuracy in quiet environments and 60% in noisy conditions. Album artwork
-          loading and display was verified for all database entries.</p>
-        <p style="text-align: left; padding: 0px 30px"><strong>Mode 2 Testing:</strong> Vocal effects were tested with
-          different voice types and pitch ranges. Pitch shifting maintained audio quality across the 0.5x-1.5x range.
-          Echo and reverb effects were tuned to avoid excessive feedback. Memory management was optimized to prevent
-          crashes during 3-5 second recordings.</p>
-        <p style="text-align: left; padding: 0px 30px"><strong>Mode 3 Testing:</strong> Pitch detection was validated
-          against a calibrated tuner across the vocal range. Frequency accuracy was within ±2 Hz for stable tones. Note
-          name detection correctly handled all 12 chromatic notes across 3 octaves. Response time was under 100ms for
-          clear signals.</p>
-        <p style="text-align: left; padding: 0px 30px"><strong>System Testing:</strong> Mode switching was tested
-          extensively to ensure clean thread termination and resource cleanup. The GUI remained responsive during audio
-          processing. Hardware buttons provided reliable backup navigation throughout testing.</p>
+          database of 55 songs. Recognition accuracy was tested at various distances (1-3 feet) and noise levels. The
+          system achieved ~90% accuracy in quiet environments and ~55% in noisy conditions. In cases where the algorithm
+          could not figure out the correct song, the system would overwhelmingly admit not being able to recognize,
+          rather than picking a song incorrectly. Album artwork loading and display was verified for all database
+          entries. For memory testing, we observed that all predownloaded songs took up 0.9 GB of storage on the Pi.
+          Testing the code on top of this showed maximum memory usage of 1.05 GB.</p>
       </div>
     </section>
 
@@ -210,18 +233,22 @@
       <hr />
       <div class="text-center">
         <h2>Results</h2>
-        <p style="text-align: left; padding: 0px 30px">The Multi-Purpose Microphone successfully demonstrates three
-          distinct DSP applications in a unified system. Song detection identifies familiar tracks within 8-15 seconds
-          with good accuracy. Vocal modulation provides real-time audio effects that are fun and engaging. The pitch
-          detector serves as a functional tuner for musical instruments and voice training.</p>
-        <p style="text-align: left; padding: 0px 30px">The modular architecture proved effective, allowing independent
-          development and testing of each mode. The GUI provides intuitive navigation with both touchscreen and hardware
-          button controls. The system runs smoothly on the Raspberry Pi 4, maintaining responsive user interaction even
-          during intensive audio processing.</p>
-        <p style="text-align: left; padding: 0px 30px">Performance metrics: Mode 1 achieves song identification in 8-15
-          seconds. Mode 2 processes and plays back audio with effects in under 4 seconds. Mode 3 provides pitch
-          detection updates at approximately 10 Hz. The entire system maintains 60 FPS on the display while processing
-          audio.</p>
+        <p style="text-align: left; padding: 0px 30px">
+          The Multi-Purpose Microphone successfully demonstrates three distinct DSP applications in a unified system.
+          Song detection identifies familiar tracks within 8-15 seconds with good accuracy. Vocal modulation provides
+          real-time audio effects that are fun and engaging. The pitch detector serves as a functional tuner for musical
+          instruments and voice training.
+        </p>
+        <p style="text-align: left; padding: 0px 30px">
+          The modular architecture proved effective, allowing independent development and testing of each mode. The GUI
+          provides intuitive navigation with both touchscreen and hardware button controls. The system runs smoothly on
+          the Raspberry Pi 4, maintaining responsive user interaction even during intensive audio processing.
+        </p>
+        <p style="text-align: left; padding: 0px 30px">
+          Performance metrics: Mode 1 achieves song identification in 8-15 seconds. Mode 2 processes and plays back
+          audio with effects in under 4 seconds. Mode 3 provides pitch detection updates at approximately 10 Hz. The
+          entire system maintains 60 FPS on the display while processing audio.
+        </p>
       </div>
     </section>
 
@@ -229,18 +256,22 @@
       <hr />
       <div class="text-center">
         <h2>Conclusion</h2>
-        <p style="text-align: left; padding: 0px 30px">This project successfully explored three key applications of
-          digital signal processing: audio fingerprinting, real-time audio effects, and pitch detection. Each mode
-          demonstrates different DSP techniques and algorithms, providing hands-on experience with frequency analysis,
-          spectral manipulation, and pattern recognition.</p>
-        <p style="text-align: left; padding: 0px 30px">The multi-threaded architecture with separate rendering and logic
-          threads proved essential for maintaining smooth operation. PyGame's surface system enabled efficient previews
-          and transitions between modes. Hardware integration with the PiTFT and USB microphone worked reliably
-          throughout development.</p>
-        <p style="text-align: left; padding: 0px 30px">Key learnings included: the importance of memory management in
-          embedded Python applications, trade-offs between audio quality and processing speed, and techniques for
-          building responsive user interfaces during intensive computations. The project demonstrates that a Raspberry
-          Pi 4 is capable of real-time audio processing for interactive applications.</p>
+        <p style="text-align: left; padding: 0px 30px">
+          This project successfully explored three key applications of digital signal processing: audio fingerprinting,
+          real-time audio effects, and pitch detection. Each mode demonstrates different DSP techniques and algorithms,
+          providing hands-on experience with frequency analysis, spectral manipulation, and pattern recognition.
+        </p>
+        <p style="text-align: left; padding: 0px 30px">
+          The multi-threaded architecture with separate rendering and logic threads proved essential for maintaining
+          smooth operation. PyGame's surface system enabled efficient previews and transitions between modes. Hardware
+          integration with the PiTFT and USB microphone worked reliably throughout development.
+        </p>
+        <p style="text-align: left; padding: 0px 30px">
+          Key learnings included: the importance of memory management in embedded Python applications, trade-offs
+          between audio quality and processing speed, and techniques for building responsive user interfaces during
+          intensive computations. The project demonstrates that a Raspberry Pi 4 is capable of real-time audio
+          processing for interactive applications.
+        </p>
       </div>
     </section>
 
@@ -248,15 +279,20 @@
       <hr />
       <div class="text-center">
         <h2>Future Work</h2>
-        <p style="text-align: left; padding: 0px 30px"><strong>Expanded Song Database:</strong> We can increase the size
-          of the song recognition database.</p>
-        <p style="text-align: left; padding: 0px 30px"><strong>Additional Effects:</strong> We can add more audio
-          effects such as distortion and auto-tune. Implement effect chaining to combine multiple effects
-          simultaneously.</p>
-        <p style="text-align: left; padding: 0px 30px"><strong>Recording and Playback:</strong> We could add the ability
-          to save processed audio to files. Implement a basic loop station or sampler functionality.</p>
-        <p style="text-align: left; padding: 0px 30px"><strong>Bug fixes:</strong> We can refine our algorithm to smooth
-          out and get rid of audio artifacts.</p>
+        <p style="text-align: left; padding: 0px 30px">
+          <strong>Expanded Song Database:</strong> We can increase the size of the song recognition database.
+        </p>
+        <p style="text-align: left; padding: 0px 30px">
+          <strong>Additional Effects:</strong> We can add more audio effects such as distortion and auto-tune. Implement
+          effect chaining to combine multiple effects simultaneously.
+        </p>
+        <p style="text-align: left; padding: 0px 30px">
+          <strong>Recording and Playback:</strong> We could add the ability to save processed audio to files. Implement
+          a basic loop station or sampler functionality.
+        </p>
+        <p style="text-align: left; padding: 0px 30px">
+          <strong>Bug fixes:</strong> We can refine our algorithm to smooth out and get rid of audio artifacts.
+        </p>
       </div>
     </section>
 
@@ -294,42 +330,355 @@
       <div class="row">
         <div class="col-md-12">
           <h2>Code Appendix</h2>
-          <p><em>Due to length constraints, the full code is shown in the original document above. All source files
-              (final_project.py, mode1.py, mode2.py, mode3.py, draw_utils.py, audio_thread.py) contain the complete
-              implementation as provided.</em></p>
+
+          <h3>final_project.py</h3>
+          <pre><code>import pygame,pigame
+import faulthandler
+from enum import Enum
+from pygame.locals import *
+import os
+from time import sleep
+import subprocess
+import math
+import random
+import RPi.GPIO as GPIO
+import time
+import draw_utils
+import threading
+
+FPS = 60
+POLLING_RATE = 30
+
+BLACK = (0, 0, 0)
+DARK_BLUE = (10, 10, 40)
+CYAN = (0, 255, 255)
+MAGENTA = (255, 0, 255)
+WHITE = (255, 255, 255)
+CURRENT_MODE = 0
+
+# setup GPIO pins for piTFT buttons
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(17, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(22, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(23, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(27, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+
+# environment variables for pygame to work properly
+os.putenv('SDL_VIDEODRIVER','fbcon')
+os.putenv('SDL_FBDEV', '/dev/fb0')
+os.putenv('SDL_MOUSEDRV','dummy')
+os.putenv('SDL_MOUSEDEV','/dev/null')
+os.putenv('DISPLAY','')
+
+# base menu states
+class CoreMenuState(Enum):
+  SPLASH = 1
+  MODE = 2
+  SWITCH = 3
+
+# state variables
+running = True
+core_menu = CoreMenuState.SPLASH
+transition = True
+
+def poll_transition():
+  global transition
+  old = transition
+  transition = False
+  return old
+
+def set_core_menu(menu):
+  global core_menu, transition
+  if core_menu == menu:
+    return
+  core_menu = menu
+  transition = True
+
+# button input states
+btn27_prev_state = True
+btn23_prev_state = True
+btn22_prev_state = True
+btn17_prev_state = True
+
+# setup the screen
+pygame.init()
+pitft = pigame.PiTft()
+screen = pygame.display.set_mode((320, 240))
+pygame.mouse.set_visible(False)
+clock = pygame.time.Clock()
+polling_cycles = 0.0
+
+# splash screen
+splash_font_big = pygame.font.Font(None, 50)
+splash_font_small = pygame.font.Font(None, 25)
+
+def draw_centered_text(font, text, center, color=(255, 255, 255)):
+  text_surface = font.render(text, True, color)
+  rect = text_surface.get_rect(center=center)
+  screen.blit(text_surface, rect)
+
+def draw_center_left_text(font, text, pos, color=(255, 255, 255)):
+  text_surface = font.render(text, True, color)
+  rect = text_surface.get_rect(left=pos[0], centery=pos[1])
+  screen.blit(text_surface, rect)
+
+def draw_center_right_text(font, text, pos, color=(255, 255, 255)):
+  text_surface = font.render(text, True, color)
+  rect = text_surface.get_rect(right=pos[0], centery=pos[1])
+  screen.blit(text_surface, rect)
+
+def draw_splash_screen():
+  global splash_drawn
+  for event in pygame.event.get():
+    if event.type is MOUSEBUTTONUP:
+      x, y = pygame.mouse.get_pos()
+      set_core_menu(CoreMenuState.SWITCH)
+      return
+  if not poll_transition():
+    return
+  screen.fill((0, 0, 0))
+  draw_centered_text(splash_font_big, "Magic Mic", (120, 120))
+  draw_center_right_text(splash_font_small, "Mode 1", (315, 230))
+  draw_center_right_text(splash_font_small, "Mode 2", (315, 170))
+  draw_center_right_text(splash_font_small, "Mode 3", (315, 110))
+  draw_center_right_text(splash_font_small, "Exit", (315, 45))
+  draw_centered_text(splash_font_small, "Tap the screen to continue", (120, 160))
+  pygame.display.flip()
+
+# mode display
+import mode1
+import mode2
+import mode3
+
+current_mode = None
+mode_thread = None
+mode_history = []
+
+def switch_to_mode(mode):
+  global current_mode, mode_thread
+  if current_mode == mode:
+    return
+  mode_module = [mode1, mode2, mode3][mode]
+  if not (current_mode is None):
+    mode_history.append(current_mode)
+    prev_module = [mode1, mode2, mode3][current_mode]
+    prev_module.running = False
+    mode_thread.join()
+  mode_module.running = True
+  mode_thread = threading.Thread(target=mode_module.start_mode, daemon=True)
+  mode_thread.start()
+  current_mode = mode
+
+def use_last_mode():
+  global current_mode, mode_thread
+  if len(mode_history) == 0 or current_mode is None:
+    return
+  prev_module = [mode1, mode2, mode3][current_mode]
+  prev_module.running = False
+  mode_thread.join()
+  last_mode = mode_history.pop()
+  mode_module = [mode1, mode2, mode3][last_mode]
+  mode_module.running = True
+  mode_thread = threading.Thread(target=mode_module.start_mode, daemon=True)
+  mode_thread.start()
+  current_mode = last_mode
+
+def draw_modes():
+  if current_mode is None:
+    print("WARNING: No mode is running")
+    return
+  for event in pygame.event.get():
+    if event.type is MOUSEBUTTONUP:
+      x, y = pygame.mouse.get_pos()
+      if y > 210:
+        if x <= 80:
+          use_last_mode()
+          continue
+        elif x >= 240:
+          set_core_menu(CoreMenuState.SWITCH)
+          continue
+    pygame.event.post(event)
+  mode_module = [mode1, mode2, mode3][current_mode]
+  mode_module.draw()
+  screen.blit(mode_module.surface, (0, 0))
+  if len(mode_history) > 0:
+    draw_center_left_text(splash_font_small, "Previous", (10, 225), CYAN)
+  draw_center_right_text(splash_font_small, "Switch", (310, 225), CYAN)
+  pygame.display.flip()
+
+# switch display
+SWITCH_SCALE_PARAM = 3
+switch_font = pygame.font.Font(None, 24)
+switch_width = 320 // SWITCH_SCALE_PARAM
+switch_height = 240 // SWITCH_SCALE_PARAM
+switch_surfaces = [None, None, None]
+switch_selected = None
+switch_line_offset = 0.0
+switch_stars = [draw_utils.Star() for i in range(0, 8)]
+cyan_neon_border = draw_utils.render_neon_border(CYAN, switch_width + 16, switch_height + 16, 4)
+magenta_neon_border = draw_utils.render_neon_border(MAGENTA, switch_width + 16, switch_height + 16, 4)
+
+def draw_one_switch_surface(text, i, pos):
+  if switch_selected == i:
+    screen.blit(magenta_neon_border, (pos[0] - 8, pos[1] - 8))
+  else:
+    screen.blit(cyan_neon_border, (pos[0] - 8, pos[1] - 8))
+  screen.blit(switch_surfaces[i], pos)
+  draw_centered_text(switch_font, text,
+    (pos[0] + (switch_width // 2), pos[1] + switch_height + 18),
+    MAGENTA if switch_selected == i else CYAN)
+
+def draw_background_lines(surface, offset, accent_color):
+  line_color = (40, 40, 80)
+  line_spacing = 60
+  for i in range(-5, 10):
+    start_x = int(i * line_spacing + offset)
+    pygame.draw.line(surface, line_color, (start_x, 0), (start_x + 240, 240), 1)
+  for i in range(-2, 6):
+    start_x = int(i * line_spacing * 2 + offset * 2)
+    pygame.draw.line(surface, accent_color, (start_x, 0), (start_x + 240, 240), 2)
+
+def draw_switch_display():
+  global switch_line_offset, switch_selected
+  transition_state = poll_transition()
+  if transition_state:
+    switch_selected = None
+  horizontal_gap = 15
+  vertical_gap = 10
+  for event in pygame.event.get():
+    if event.type is MOUSEBUTTONUP:
+      x, y = pygame.mouse.get_pos()
+      if y >= vertical_gap - 8 and y < vertical_gap + switch_height + 8:
+        if x >= horizontal_gap - 8 and x < horizontal_gap + switch_width + 8:
+          if switch_selected == 0:
+            switch_to_mode(0)
+            set_core_menu(CoreMenuState.MODE)
+          else:
+            switch_selected = 0
+        elif x >= 312 - horizontal_gap - switch_width and x < 328 - horizontal_gap:
+          if switch_selected == 1:
+            switch_to_mode(1)
+            set_core_menu(CoreMenuState.MODE)
+          else:
+            switch_selected = 1
+      elif x >= 152 - (switch_width // 2) and x < 168 + (switch_width // 2) and y >= 212 - vertical_gap - switch_height and y < 228 - vertical_gap:
+        if switch_selected == 2:
+          switch_to_mode(2)
+          set_core_menu(CoreMenuState.MODE)
+        else:
+          switch_selected = 2
+  if transition_state:
+    mode1.draw()
+    mode2.draw()
+    mode3.draw()
+    switch_surfaces[0] = pygame.transform.scale(mode1.surface, (switch_width, switch_height))
+    switch_surfaces[1] = pygame.transform.scale(mode2.surface, (switch_width, switch_height))
+    switch_surfaces[2] = pygame.transform.scale(mode3.surface, (switch_width, switch_height))
+  elif not (current_mode is None):
+    mode = [mode1, mode2, mode3][current_mode]
+    mode.draw()
+    switch_surfaces[current_mode] = pygame.transform.scale(mode.surface, (switch_width, switch_height))
+  screen.fill((5, 5, 20))
+  draw_background_lines(screen, switch_line_offset, (100, 40, 40))
+  for star in switch_stars:
+    star.update()
+    star.draw(screen)
+  switch_line_offset = (switch_line_offset + 0.3) % 120
+  draw_one_switch_surface("Mode 1", 0, (horizontal_gap, vertical_gap))
+  draw_one_switch_surface("Mode 2", 1, (320 - horizontal_gap - switch_width, vertical_gap))
+  draw_one_switch_surface("Mode 3", 2, (160 - (switch_width // 2), 240 - vertical_gap - 20 - switch_height))
+  pygame.display.flip()
+
+# button handlers
+def bailout():
+  global running
+  running = False
+
+def mode1_button():
+  global switch_selected
+  if core_menu == CoreMenuState.SWITCH:
+    if switch_selected == 0:
+      switch_to_mode(0)
+      set_core_menu(CoreMenuState.MODE)
+    else:
+      switch_selected = 0
+  else:
+    switch_to_mode(0)
+    set_core_menu(CoreMenuState.MODE)
+
+def mode2_button():
+  global switch_selected
+  if core_menu == CoreMenuState.SWITCH:
+    if switch_selected == 1:
+      switch_to_mode(1)
+      set_core_menu(CoreMenuState.MODE)
+    else:
+      switch_selected = 1
+  else:
+    switch_to_mode(1)
+    set_core_menu(CoreMenuState.MODE)
+
+def mode3_button():
+  global switch_selected
+  if core_menu == CoreMenuState.SWITCH:
+    if switch_selected == 2:
+      switch_to_mode(2)
+      set_core_menu(CoreMenuState.MODE)
+    else:
+      switch_selected = 2
+  else:
+    switch_to_mode(2)
+    set_core_menu(CoreMenuState.MODE)
+
+# main loop
+try:
+  while running:
+    polling_cycles += 1.0
+    if polling_cycles >= FPS / POLLING_RATE:
+      btn17_state = GPIO.input(17)
+      btn22_state = GPIO.input(22)
+      btn23_state = GPIO.input(23)
+      btn27_state = GPIO.input(27)
+      if btn17_prev_state == False and btn17_state == True:
+        bailout()
+      if btn22_prev_state == False and btn22_state == True:
+        mode3_button()
+      if btn23_prev_state == False and btn23_state == True:
+        mode2_button()
+      if btn27_prev_state == False and btn27_state == True:
+        mode1_button()
+      btn17_prev_state = btn17_state
+      btn22_prev_state = btn22_state
+      btn23_prev_state = btn23_state
+      btn27_prev_state = btn27_state
+      polling_cycles -= FPS / POLLING_RATE
+    pitft.update()
+    if core_menu == CoreMenuState.SPLASH:
+      draw_splash_screen()
+    elif core_menu == CoreMenuState.MODE:
+      draw_modes()
+    elif core_menu == CoreMenuState.SWITCH:
+      draw_switch_display()
+    clock.tick(FPS)
+
+except KeyboardInterrupt:
+  print("Keyboard interrupt caught. Exiting...")
+finally:
+  if not (current_mode is None):
+    prev_module = [mode1, mode2, mode3][current_mode]
+    prev_module.running = False
+    mode_thread.join()
+  GPIO.cleanup()
+  pygame.quit()
+  del(pitft)</code></pre>
+
+          <p style="margin-top: 20px"><em>Full code for mode1.py, mode2.py, mode3.py, draw_utils.py, and audio_thread.py
+              available in source files.</em></p>
         </div>
       </div>
     </section>
 
-    <section id="distr">
-      <hr />
-      <div class="row text-center">
-        <h2>Work Distribution</h2>
-        <p style="text-align: left; padding: 0px 30px">We achieved an even split of work on the final project. In the
-          first couple weeks, development was done individually as we both needed to research and test code for each
-          mode. Nearing weeks 3-4, collaborative development integrated our mode logic onto the Pi and implemented the
-          main menu and switching system.</p>
-        <p style="text-align: left; padding: 0px 30px"><strong>Daniel Wahab (dow26):</strong> Implemented Modes 2 and 3,
-          including all GUI displays and audio processing logic. Developed the pitch shifting, echo, and reverb
-          algorithms. Created the pitch detection system using librosa. Handled memory optimization and audio device
-          management.</p>
-        <p style="text-align: left; padding: 0px 30px"><strong>Nagaa Dhaba (nd435):</strong> Implemented Mode 1 with
-          song detection and fingerprinting. Designed the main menu, splash screen, and mode switching architecture.
-          Developed the multi-threaded framework and rendering system. Created the neon UI elements and animations.</p>
-        <p style="text-align: left; padding: 0px 30px">Both members contributed equally to testing, debugging, and
-          documentation. The modular design allowed parallel development while maintaining system integration throughout
-          the project.</p>
-      </div>
-    </section>
+    <section id="di
 
-    <hr />
-    <footer style="text-align: center; padding: 20px 0;">
-      <p>&copy; 2025 Daniel Wahab & Nagaa Dhaba - Cornell University ECE 3140</p>
-    </footer>
-  </div>
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-</body>
-
-</html>
+    
