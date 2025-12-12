@@ -38,18 +38,17 @@
       padding: 15px;
       border-radius: 4px;
       overflow-x: auto;
+      font-size: 12px;
     }
 
     code {
       color: #c7254e;
     }
 
-    /* Smooth scrolling */
     html {
       scroll-behavior: smooth;
     }
 
-    /* Adjust scroll offset for fixed navbar */
     section {
       scroll-margin-top: 70px;
     }
@@ -298,16 +297,15 @@
           <strong>Expanded Song Database:</strong> We can increase the size of the song recognition database.
         </p>
         <p style="text-align: left; padding: 0px 30px">
-          <strong>Additional Effects:</strong> We can add more audio effects such as distortion and auto-tune.
-          Implement effect chaining to combine multiple effects simultaneously.
+          <strong>Additional Effects:</strong> We can add more audio effects such as distortion and auto-tune. Implement
+          effect chaining to combine multiple effects simultaneously.
         </p>
         <p style="text-align: left; padding: 0px 30px">
           <strong>Recording and Playback:</strong> We could add the ability to save processed audio to files. Implement
-          a basic
-          loop station or sampler functionality.
+          a basic loop station or sampler functionality.
         </p>
         <p style="text-align: left; padding: 0px 30px">
-          <strong>Bug fixes</strong> We can refine our algorithm to smooth out and get rid of audio artifacts.
+          <strong>Bug fixes:</strong> We can refine our algorithm to smooth out and get rid of audio artifacts.
         </p>
       </div>
     </section>
@@ -362,8 +360,6 @@ import time
 import draw_utils
 import threading
 
-# def local_path(p):
-#   return os.path.join(os.path.dirname(os.path.abspath(__file__)), p)
 FPS = 60
 POLLING_RATE = 30
 
@@ -382,9 +378,9 @@ GPIO.setup(23, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(27, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 # environment variables for pygame to work properly
-os.putenv('SDL_VIDEODRIVER','fbcon') # two environment variables for piTFT display
+os.putenv('SDL_VIDEODRIVER','fbcon')
 os.putenv('SDL_FBDEV', '/dev/fb0')
-os.putenv('SDL_MOUSEDRV','dummy') # Environment variables for touchscreen
+os.putenv('SDL_MOUSEDRV','dummy')
 os.putenv('SDL_MOUSEDEV','/dev/null')
 os.putenv('DISPLAY','')
 
@@ -447,16 +443,13 @@ def draw_center_right_text(font, text, pos, color=(255, 255, 255)):
 
 def draw_splash_screen():
   global splash_drawn
-  # handle touchscreen events
   for event in pygame.event.get():
     if event.type is MOUSEBUTTONUP:
       x, y = pygame.mouse.get_pos()
       set_core_menu(CoreMenuState.SWITCH)
       return
-  # we only ever need to draw the splash screen once
   if not poll_transition():
     return
-  # draw the splash screen
   screen.fill((0, 0, 0))
   draw_centered_text(splash_font_big, "Magic Mic", (120, 120))
   draw_center_right_text(splash_font_small, "Mode 1", (315, 230))
@@ -494,11 +487,9 @@ def use_last_mode():
   global current_mode, mode_thread
   if len(mode_history) == 0 or current_mode is None:
     return
-  # terminate previous mode
   prev_module = [mode1, mode2, mode3][current_mode]
   prev_module.running = False
   mode_thread.join()
-  # start new mode
   last_mode = mode_history.pop()
   mode_module = [mode1, mode2, mode3][last_mode]
   mode_module.running = True
@@ -508,7 +499,7 @@ def use_last_mode():
 
 def draw_modes():
   if current_mode is None:
-    print("WARNING: No mode is running???????")
+    print("WARNING: No mode is running")
     return
   for event in pygame.event.get():
     if event.type is MOUSEBUTTONUP:
@@ -521,7 +512,6 @@ def draw_modes():
           set_core_menu(CoreMenuState.SWITCH)
           continue
     pygame.event.post(event)
-        
   mode_module = [mode1, mode2, mode3][current_mode]
   mode_module.draw()
   screen.blit(mode_module.surface, (0, 0))
@@ -532,7 +522,6 @@ def draw_modes():
 
 # switch display
 SWITCH_SCALE_PARAM = 3
-
 switch_font = pygame.font.Font(None, 24)
 switch_width = 320 // SWITCH_SCALE_PARAM
 switch_height = 240 // SWITCH_SCALE_PARAM
@@ -540,7 +529,6 @@ switch_surfaces = [None, None, None]
 switch_selected = None
 switch_line_offset = 0.0
 switch_stars = [draw_utils.Star() for i in range(0, 8)]
-
 cyan_neon_border = draw_utils.render_neon_border(CYAN, switch_width + 16, switch_height + 16, 4)
 magenta_neon_border = draw_utils.render_neon_border(MAGENTA, switch_width + 16, switch_height + 16, 4)
 
@@ -550,21 +538,16 @@ def draw_one_switch_surface(text, i, pos):
   else:
     screen.blit(cyan_neon_border, (pos[0] - 8, pos[1] - 8))
   screen.blit(switch_surfaces[i], pos)
-  draw_centered_text(
-    switch_font,
-    text,
+  draw_centered_text(switch_font, text,
     (pos[0] + (switch_width // 2), pos[1] + switch_height + 18),
-    MAGENTA if switch_selected == i else CYAN
-  )
+    MAGENTA if switch_selected == i else CYAN)
 
 def draw_background_lines(surface, offset, accent_color):
   line_color = (40, 40, 80)
   line_spacing = 60
-  # Draw diagonal lines
   for i in range(-5, 10):
     start_x = int(i * line_spacing + offset)
     pygame.draw.line(surface, line_color, (start_x, 0), (start_x + 240, 240), 1)
-  # Draw accent lines
   for i in range(-2, 6):
     start_x = int(i * line_spacing * 2 + offset * 2)
     pygame.draw.line(surface, accent_color, (start_x, 0), (start_x + 240, 240), 2)
@@ -572,40 +555,32 @@ def draw_background_lines(surface, offset, accent_color):
 def draw_switch_display():
   global switch_line_offset, switch_selected
   transition_state = poll_transition()
-  # reset the mode selection
   if transition_state:
     switch_selected = None
-  # handle touchscreen presses
   horizontal_gap = 15
   vertical_gap = 10
   for event in pygame.event.get():
     if event.type is MOUSEBUTTONUP:
       x, y = pygame.mouse.get_pos()
-      # if mode 1 or 2 are being pressed
       if y >= vertical_gap - 8 and y < vertical_gap + switch_height + 8:
-        # if mode 1 is being pressed
         if x >= horizontal_gap - 8 and x < horizontal_gap + switch_width + 8:
           if switch_selected == 0:
             switch_to_mode(0)
             set_core_menu(CoreMenuState.MODE)
           else:
             switch_selected = 0
-        # if mode 2 is being pressed
         elif x >= 312 - horizontal_gap - switch_width and x < 328 - horizontal_gap:
           if switch_selected == 1:
             switch_to_mode(1)
             set_core_menu(CoreMenuState.MODE)
           else:
             switch_selected = 1
-      # if mode 3 is being pressed
       elif x >= 152 - (switch_width // 2) and x < 168 + (switch_width // 2) and y >= 212 - vertical_gap - switch_height and y < 228 - vertical_gap:
         if switch_selected == 2:
           switch_to_mode(2)
           set_core_menu(CoreMenuState.MODE)
         else:
           switch_selected = 2
-  # if there is no current mode and it's a transition, then we got here from the splash screen
-  # draw all three modes in this case
   if transition_state:
     mode1.draw()
     mode2.draw()
@@ -613,12 +588,10 @@ def draw_switch_display():
     switch_surfaces[0] = pygame.transform.scale(mode1.surface, (switch_width, switch_height))
     switch_surfaces[1] = pygame.transform.scale(mode2.surface, (switch_width, switch_height))
     switch_surfaces[2] = pygame.transform.scale(mode3.surface, (switch_width, switch_height))
-  # if there is an active mode, keep rendering it
   elif not (current_mode is None):
     mode = [mode1, mode2, mode3][current_mode]
     mode.draw()
     switch_surfaces[current_mode] = pygame.transform.scale(mode.surface, (switch_width, switch_height))
-  # draw the screen
   screen.fill((5, 5, 20))
   draw_background_lines(screen, switch_line_offset, (100, 40, 40))
   for star in switch_stars:
@@ -629,7 +602,6 @@ def draw_switch_display():
   draw_one_switch_surface("Mode 2", 1, (320 - horizontal_gap - switch_width, vertical_gap))
   draw_one_switch_surface("Mode 3", 2, (160 - (switch_width // 2), 240 - vertical_gap - 20 - switch_height))
   pygame.display.flip()
-
 
 # button handlers
 def bailout():
@@ -677,15 +649,10 @@ try:
   while running:
     polling_cycles += 1.0
     if polling_cycles >= FPS / POLLING_RATE:
-      # poll for button inputs
-      # callbacks caused the Pi to crash almost immediately, so we want to
-      # avoid that as much as possible
       btn17_state = GPIO.input(17)
       btn22_state = GPIO.input(22)
       btn23_state = GPIO.input(23)
       btn27_state = GPIO.input(27)
-
-      # register presses going from low to high (when the button is released)
       if btn17_prev_state == False and btn17_state == True:
         bailout()
       if btn22_prev_state == False and btn22_state == True:
@@ -694,14 +661,11 @@ try:
         mode2_button()
       if btn27_prev_state == False and btn27_state == True:
         mode1_button()
-
       btn17_prev_state = btn17_state
       btn22_prev_state = btn22_state
       btn23_prev_state = btn23_state
       btn27_prev_state = btn27_state
-
       polling_cycles -= FPS / POLLING_RATE
-
     pitft.update()
     if core_menu == CoreMenuState.SPLASH:
       draw_splash_screen()
@@ -709,13 +673,10 @@ try:
       draw_modes()
     elif core_menu == CoreMenuState.SWITCH:
       draw_switch_display()
-
     clock.tick(FPS)
-
 
 except KeyboardInterrupt:
   print("Keyboard interrupt caught. Exiting...")
-
 finally:
   if not (current_mode is None):
     prev_module = [mode1, mode2, mode3][current_mode]
@@ -723,1241 +684,12 @@ finally:
     mode_thread.join()
   GPIO.cleanup()
   pygame.quit()
-  del(pitft)
-        </code></pre>
-          <b>mode1.py</b>
-          <pre><code>
-import numpy as np
-import os
-import time
-import pygame
-
-from audio_thread import MicrophoneThread
-from enum import Enum
-from pygame.locals import *
-from abracadabra.fingerprint import fingerprint_audio
-from abracadabra.record import open_audio_stream, record_one_second, close_audio_stream
-from abracadabra.storage import get_matches, get_info_for_song_id
-from abracadabra.recognise import best_match
-
-BLACK = (0, 0, 0)
-DARK_BLUE = (10, 10, 40)
-CYAN = (0, 255, 255)
-MAGENTA = (255, 0, 255)
-WHITE = (255, 255, 255)
-CURRENT_MODE = 0
-
-running = False
-surface = pygame.Surface((320, 240))
-
-class ModeState(Enum):
-  START = 1
-  LISTENING = 2
-  DETECTED = 3
-
-state = ModeState.START
-transition = False
-listening = False
-song_info = None
-
-def load_webp_images(directory):  
-  images = {}
-  for filename in os.listdir(directory):
-    if filename.lower().endswith(".webp"):
-      full_path = os.path.join(directory, filename)
-      img = pygame.image.load(full_path)
-      img = img.convert_alpha()
-      img = pygame.transform.smoothscale(img, (80, 80))
-      key = os.path.splitext(filename)[0]
-      images[key] = img
-  return images
-
-album_images = load_webp_images("/home/pi/final_project/album_images")
-
-def poll_transition():
-  global transition
-  old = transition
-  transition = False
-  return old
-
-def set_state(menu):
-  global state, transition
-  if state == menu:
-    return
-  state = menu
-  transition = True
-
-font_big = pygame.font.Font(None, 50)
-font_small = pygame.font.Font(None, 25)
-font_smaller = pygame.font.Font(None, 20)
-
-def draw_centered_text(font, text, center, color=(255, 255, 255)):
-  text_surface = font.render(text, True, color)
-  rect = text_surface.get_rect(center=center)
-  surface.blit(text_surface, rect)
-
-def draw_start():
-  poll_transition()
-  for event in pygame.event.get():
-    if event.type is MOUSEBUTTONUP:
-      set_state(ModeState.LISTENING)
-  draw_centered_text(font_big, "Song Detection", (160, 80))
-  draw_centered_text(font_small, "Tap the screen to start listening", (160, 160))
-
-def draw_listening():
-  global listening
-  if poll_transition():
-    listening = True
-  elif not listening:
-    set_state(ModeState.DETECTED)
-  for event in pygame.event.get():
-    pass
-  draw_centered_text(font_big, "Listening...", (160, 120))
-
-def draw_detected():
-  poll_transition()
-  for event in pygame.event.get():
-    if event.type is MOUSEBUTTONUP:
-      set_state(ModeState.LISTENING)
-  if song_info is None:
-    draw_centered_text(font_small, "Song was not recognized", (160, 80))
-  else:
-    surface.blit(album_images[song_info[0] + " - " + song_info[1]], (120, 30))
-    draw_centered_text(font_small, song_info[2], (160, 130), MAGENTA)
-    draw_centered_text(font_smaller, song_info[0] + " - " + song_info[1], (160, 150), WHITE)
-  draw_centered_text(font_small, "Tap the screen to start listening", (160, 180))
-
-def draw():
-  surface.fill((5, 5, 20))
-  if state == ModeState.START:
-    draw_start()
-  elif state == ModeState.LISTENING:
-    draw_listening()
-  elif state == ModeState.DETECTED:
-    draw_detected()
-
-def start_mode():
-  global state, running, listening, song_info
-  audio_thread = MicrophoneThread(recording_window=8.0)
-  while True:
-    if not running:
-      break
-    if not listening:
-      continue
-    audio_thread.clear_buffer()
-    audio_thread.start_recording()
-    while audio_thread.get_recorded_time() < 15.0:
-      if not running:
-        break
-      time.sleep(0.5)
-      if audio_thread.get_recorded_time() < 0.5:
-        continue
-      buffer = audio_thread.get_buffer()
-      hashes = fingerprint_audio(np.frombuffer(buffer, dtype=np.int16))
-      matches = get_matches(hashes)
-      matched_song = best_match(matches)
-      song_info = get_info_for_song_id(matched_song)
-      if not (song_info is None):
-        break
-    if not running:
-      state = ModeState.START
-      break
-    audio_thread.stop_recording()
-    listening = False
-  audio_thread.terminate()
-  listening = False
-        </code></pre>
-          <b>mode2.py</b>
-          <pre><code>
-import pygame
-from pygame.locals import *
-import os
-import time
-import subprocess
-import math
-import random
-import RPi.GPIO as GPIO
-from time import sleep
-
-import pyaudio
-import wave
-import sys
-import numpy as np
-from scipy import signal
-import draw_utils
-import struct
-import gc
-
-running = False
-SCREEN_WIDTH = 320
-SCREEN_HEIGHT = 240
-BLACK = (0, 0, 0)
-DARK_BLUE = (10, 10, 40)
-CYAN = (0, 255, 255)
-MAGENTA = (255, 0, 255)
-YELLOW = (255, 255, 0)
-GREEN = (0, 255, 0)
-WHITE = (255, 255, 255)
-DARK_BG = (5, 5, 20)
-    
-surface = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
-
-font_big = pygame.font.Font(None, 30)
-
-pygame.mouse.set_visible(False)
-CURRENT_MODE = 0
-
-RECORDING = False
-FORMAT = pyaudio.paInt16
-CHANNELS = 1
-RATE = 44100
-CHUNK = 2048  # Reduced from 4096 to lower memory usage
-RECORD_SECONDS = 3  # Reduced from 5 to prevent memory issues
-pitch_shift_factor = 0.7
-
-# Audio effect modes
-EFFECT_MODE = 'pitch'  # 'pitch', 'echo', 'reverb'
-
-
-class NeonRect:
-    def __init__(self, x, y, width, height,
-                 fill_color,
-                 border_color,
-                 glow_thickness=4):
-        self.rect = pygame.Rect(x, y, width, height)
-        self.fill_rect = pygame.Rect(x+6, y+6, width - 13, height - 13)
-        self.fill_color = fill_color
-        self.border_color = border_color
-        self.glow_border = draw_utils.render_neon_border(
-            border_color, width, height, glow_thickness
-        )
-
-    def draw(self, surface):
-        surface.blit(self.glow_border, (self.rect.x, self.rect.y))
-        pygame.draw.rect(surface, self.fill_color, self.fill_rect)
-
-
-def draw_statictext_firstmenu():
-    title_text = {'Vocal Modulation': (160, 25)}
-    button_text = {'PITCH': (80, 105), 'SHIFTING': (80, 135), 
-                   'AUDIO': (235, 105), 'EFFECTS': (235, 135)}
-    for k, v in title_text.items():
-        text_surface = font_big.render('%s' % k, True, WHITE)
-        rect = text_surface.get_rect(center=v)
-        surface.blit(text_surface, rect)
-    for k, v in button_text.items():
-        text_surface = font_big.render('%s' % k, True, WHITE)
-        rect = text_surface.get_rect(center=v)
-        surface.blit(text_surface, rect)
-
-
-def draw_statictext_secondmenu():
-    global pitch_shift_factor, RECORDING
-    title_text = {'Pitch Shifting': (160, 25)}
-    button_text = {' PITCH ': (55, 105), 'DOWN': (55, 135), 
-                   'PITCH': (160, 105), 'UP': (160, 135), 
-                   'RECORD': (265, 105), 'STOP': (265, 135)}
-    
-    pitch_display = f'Factor: {pitch_shift_factor:.1f}'
-    status_display = 'REC' if RECORDING else 'READY'
-    
-    for k, v in title_text.items():
-        text_surface = font_big.render('%s' % k, True, WHITE)
-        rect = text_surface.get_rect(center=v)
-        surface.blit(text_surface, rect)
-    for k, v in button_text.items():
-        text_surface = font_big.render('%s' % k, True, WHITE)
-        rect = text_surface.get_rect(center=v)
-        surface.blit(text_surface, rect)
-    
-    small_font = pygame.font.Font(None, 20)
-    pitch_surf = small_font.render(pitch_display, True, CYAN)
-    status_surf = small_font.render(status_display, True, GREEN if not RECORDING else (255, 0, 0))
-    surface.blit(pitch_surf, (10, 25))
-    surface.blit(status_surf, (250, 25))
-
-
-def draw_statictext_thirdmenu():
-    global RECORDING, EFFECT_MODE
-    title_text = {'Audio Effects': (160, 25)}
-    button_text = {'ECHO': (55, 105), 'MODE': (55, 135), 
-                   'REVERB': (160, 105), 'MODE': (160, 135), 
-                   'RECORD': (265, 105), 'STOP': (265, 135)}
-    
-    mode_display = f'Mode: {EFFECT_MODE.upper()}'
-    status_display = 'REC' if RECORDING else 'READY'
-    
-    for k, v in title_text.items():
-        text_surface = font_big.render('%s' % k, True, WHITE)
-        rect = text_surface.get_rect(center=v)
-        surface.blit(text_surface, rect)
-    for k, v in button_text.items():
-        text_surface = font_big.render('%s' % k, True, WHITE)
-        rect = text_surface.get_rect(center=v)
-        surface.blit(text_surface, rect)
-    
-    small_font = pygame.font.Font(None, 20)
-    mode_surf = small_font.render(mode_display, True, YELLOW)
-    status_surf = small_font.render(status_display, True, GREEN if not RECORDING else (255, 0, 0))
-    surface.blit(mode_surf, (10, 25))
-    surface.blit(status_surf, (250, 25))
-
-
-buttons = {
-    'shifting': NeonRect(5, 41, 155, 159, (20, 20, 40), MAGENTA),
-    'modulation': NeonRect(160, 41, 155, 159, (20, 20, 40), MAGENTA)
-}
-
-button2 = {
-    'Pitch Up': NeonRect(5, 41, 100, 159, (20, 20, 40), CYAN),
-    'Pitch Down': NeonRect(110, 41, 100, 159, (20, 20, 40), CYAN),
-    'Record/Stop': NeonRect(215, 41, 100, 159, (20, 20, 40), CYAN)
-}
-
-button3 = {
-    'ECHO': NeonRect(5, 41, 100, 159, (20, 20, 40), YELLOW),
-    'REVERB': NeonRect(110, 41, 100, 159, (20, 20, 40), YELLOW),
-    'Record/Stop': NeonRect(215, 41, 100, 159, (20, 20, 40), CYAN)
-}
-
-
-def draw_firstmenu():
-    surface.fill(DARK_BG)
-    for button in buttons.values():
-        button.draw(surface)
-    draw_statictext_firstmenu()
-
-
-def draw_shiftmenu():
-    global CURRENT_MODE, RECORDING, pitch_shift_factor, EFFECT_MODE
-    
-    surface.fill(DARK_BG)
-    for button in button2.values():
-        button.draw(surface)
-    draw_statictext_secondmenu()
-    
-    for event in pygame.event.get():
-        if event.type == MOUSEBUTTONDOWN:
-            x, y = pygame.mouse.get_pos()
-        elif event.type == MOUSEBUTTONUP:
-            x, y = pygame.mouse.get_pos()
-            if 40 < y < 200:
-                if 5 < x < 105:
-                    if pitch_shift_factor < 1.5:
-                        pitch_shift_factor += 0.1
-                        EFFECT_MODE = 'pitch'
-                        print(f"Pitch factor: {pitch_shift_factor:.1f}")
-                elif 110 < x < 210:
-                    if pitch_shift_factor > 0.5:
-                        pitch_shift_factor -= 0.1
-                        EFFECT_MODE = 'pitch'
-                        print(f"Pitch factor: {pitch_shift_factor:.1f}")
-                elif 215 < x < 315:
-                    RECORDING = not RECORDING
-                    EFFECT_MODE = 'pitch'
-                    print(f"RECORDING: {RECORDING}")
-            elif y > 200:
-                CURRENT_MODE = 0
-                RECORDING = False
-                return
-
-
-def draw_changemenu():
-    global CURRENT_MODE, RECORDING, EFFECT_MODE
-    
-    surface.fill(DARK_BG)
-    for button in button3.values():
-        button.draw(surface)
-    draw_statictext_thirdmenu()
-    
-    for event in pygame.event.get():
-        if event.type == MOUSEBUTTONDOWN:
-            x, y = pygame.mouse.get_pos()
-        elif event.type == MOUSEBUTTONUP:
-            x, y = pygame.mouse.get_pos()
-            if 40 < y < 200:
-                if 5 < x < 105:
-                    EFFECT_MODE = 'echo'
-                    print("Echo Mode selected")
-                elif 110 < x < 210:
-                    EFFECT_MODE = 'reverb'
-                    print("Reverb Mode selected")
-                elif 215 < x < 315:
-                    RECORDING = not RECORDING
-                    print(f"RECORDING: {RECORDING}")
-            elif y > 200:
-                CURRENT_MODE = 0
-                RECORDING = False
-                return
-
-
-def draw():
-    global CURRENT_MODE
-    
-    if CURRENT_MODE == 0:
-        draw_firstmenu()
-        for event in pygame.event.get():
-            if event.type == MOUSEBUTTONDOWN:
-                x, y = pygame.mouse.get_pos()
-            elif event.type == MOUSEBUTTONUP:
-                x, y = pygame.mouse.get_pos()
-                if 40 < y < 200:
-                    if x <= 160:
-                        CURRENT_MODE = 1
-                    else:
-                        CURRENT_MODE = 2
-                elif y > 200:
-                    print("Quit requested")
-    
-    elif CURRENT_MODE == 1:
-        draw_shiftmenu()
-    
-    elif CURRENT_MODE == 2:
-        draw_changemenu()
-
-
-def apply_echo(audio_array, delay_ms=250, decay=0.4):
-    delay_samples = int(RATE * delay_ms / 1000)
-    
-    # Use int16
-    echo_audio = np.zeros(len(audio_array) + delay_samples, dtype=np.int16)
-    echo_audio[:len(audio_array)] = audio_array
-    
-    # Add delayed echo with decay
-    delayed = (audio_array.astype(np.int32) * decay).astype(np.int16)
-    echo_audio[delay_samples:delay_samples + len(audio_array)] = np.clip(
-        echo_audio[delay_samples:delay_samples + len(audio_array)].astype(np.int32) + delayed,
-        -32768, 32767
-    ).astype(np.int16)
-    
-    return echo_audio
-
-
-def apply_reverb(audio_array, num_echoes=3):
-    """Apply reverb effect - optimized for Pi with fewer echoes"""
-    # Use fewer, shorter delays to reduce memory usage
-    delays = [50, 120, 200]  # milliseconds
-    decays = [0.4, 0.25, 0.15]
-    
-    max_delay_samples = int(RATE * max(delays) / 1000)
-    output = np.zeros(len(audio_array) + max_delay_samples, dtype=np.int16)
-    output[:len(audio_array)] = audio_array
-    
-    for delay_ms, decay in zip(delays[:num_echoes], decays[:num_echoes]):
-        delay_samples = int(RATE * delay_ms / 1000)
-        delayed = (audio_array.astype(np.int32) * decay).astype(np.int16)
-        output[delay_samples:delay_samples + len(audio_array)] = np.clip(
-            output[delay_samples:delay_samples + len(audio_array)].astype(np.int32) + delayed,
-            -32768, 32767
-        ).astype(np.int16)
-    
-    return output
-
-
-def apply_pitch_shift(audio_array, shift_factor):
-    """Apply pitch shift - optimized"""
-    try:
-        num_samples = int(len(audio_array) * shift_factor)
-        # Use a simpler resampling if scipy.signal.resample is too heavy
-        shifted_audio = signal.resample(audio_array, num_samples)
-        return np.array(shifted_audio, dtype='int16')
-    except MemoryError:
-        print("Memory error during pitch shift, returning original")
-        return audio_array
-
-# def apply_pitch_shift(audio_array, shift_factor):
-#     """Apply pitch shift in chunks to avoid memory issues"""
-#     try:
-#         if shift_factor == 1.0:
-#             return audio_array
-        
-#         # Process in smaller chunks to avoid memory issues
-#         chunk_size = 16384 #8192  # Process 8192 samples at a time
-#         overlap = 2048 #1024     # Overlap to avoid clicks
-        
-#         output_chunks = []
-        
-#         # Step 1: Resample to change pitch (and speed)
-#         for i in range(0, len(audio_array), chunk_size - overlap):
-#             chunk = audio_array[i:i + chunk_size]
-#             if len(chunk) == 0:
-#                 break
-            
-#             # Resample this chunk
-#             new_chunk_size = int(len(chunk) * shift_factor)
-#             if new_chunk_size > 0:
-#                 resampled = signal.resample(chunk, new_chunk_size)
-#                 output_chunks.append(resampled)
-        
-#         # Concatenate all resampled chunks
-#         if len(output_chunks) == 0:
-#             return audio_array
-        
-#         speed_changed = np.concatenate(output_chunks)
-        
-#         # Step 2: Time-stretch back to original length in chunks
-#         original_length = len(audio_array)
-#         current_length = len(speed_changed)
-        
-#         if current_length == 0:
-#             return audio_array
-        
-#         # Calculate chunk sizes for time stretching
-#         stretch_ratio = original_length / current_length
-#         output_chunks = []
-        
-#         for i in range(0, len(speed_changed), chunk_size - overlap):
-#             chunk = speed_changed[i:i + chunk_size]
-#             if len(chunk) == 0:
-#                 break
-            
-#             # Stretch this chunk
-#             new_chunk_size = int(len(chunk) * stretch_ratio)
-#             if new_chunk_size > 0:
-#                 stretched = signal.resample(chunk, new_chunk_size)
-#                 output_chunks.append(stretched)
-        
-#         if len(output_chunks) == 0:
-#             return audio_array
-        
-#         result = np.concatenate(output_chunks)
-        
-#         # Trim or pad to exact original length
-#         if len(result) > original_length:
-#             result = result[:original_length]
-#         elif len(result) < original_length:
-#             result = np.pad(result, (0, original_length - len(result)), 'constant')
-        
-#         return np.array(result, dtype='int16')
-        
-#     except MemoryError:
-#         print("Memory error during pitch shift, returning original")
-#         return audio_array
-#     except Exception as e:
-#         print(f"Pitch shift error: {e}, returning original")
-#         return audio_array
-
-def mode_logic():
-    pass
-
-
-def start_mode():
-    global running, RECORDING, pitch_shift_factor, EFFECT_MODE
-    
-    print("start_mode() initialized")
-    
-    audio = pyaudio.PyAudio()
-    
-    def find_usb_mic():
-        """Find USB microphone device index"""
-        info = audio.get_host_api_info_by_index(0)
-        numdevices = info.get('deviceCount')
-        
-        for i in range(numdevices):
-            dev_info = audio.get_device_info_by_host_api_device_index(0, i)
-            if dev_info.get('maxInputChannels') > 0:
-                name = dev_info.get('name')
-                if 'USB' in name or 'usb' in name:
-                    print(f"Found USB mic at index {i}: {name}")
-                    return i
-        
-        for i in range(numdevices):
-            if audio.get_device_info_by_host_api_device_index(0, i).get('maxInputChannels') > 0:
-                name = audio.get_device_info_by_host_api_device_index(0, i).get('name')
-                print(f"Using input device at index {i}: {name}")
-                return i
-        
-        return None
-
-    def find_default_output():
-        """Find system default output"""
-        info = audio.get_host_api_info_by_index(0)
-        numdevices = info.get('deviceCount')
-        
-        for i in range(numdevices):
-            dev_info = audio.get_device_info_by_host_api_device_index(0, i)
-            if dev_info.get('maxOutputChannels') > 0:
-                name = dev_info.get('name')
-                if 'sysdefault' in name or 'default' in name.lower():
-                    print(f"Found output at index {i}: {name}")
-                    return i
-        
-        for i in range(numdevices):
-            if audio.get_device_info_by_host_api_device_index(0, i).get('maxOutputChannels') > 0:
-                name = audio.get_device_info_by_host_api_device_index(0, i).get('name')
-                print(f"Using output device at index {i}: {name}")
-                return i
-        
-        return None
-
-    # Find devices once at startup
-    input_index = find_usb_mic()
-    output_index = find_default_output()
-
-    if input_index is None or output_index is None:
-        print("Error: Could not find suitable audio devices!")
-        audio.terminate()
-        running = False
-        return
-
-    print(f"\nVocal Effects Ready")
-    print(f"Input device: {input_index}")
-    print(f"Output device: {output_index}")
-    
-    while running:
-        if RECORDING:
-            current_effect = EFFECT_MODE
-            print(f"RECORDING with effect: {current_effect}")
-            
-            stream = None
-            out_stream = None
-            
-            try:
-                all_audio_data = []
-                
-                # Open input stream
-                stream = audio.open(
-                    format=FORMAT,
-                    channels=CHANNELS,
-                    rate=RATE,
-                    input=True,
-                    input_device_index=input_index,
-                    frames_per_buffer=CHUNK
-                )
-                
-                print(f"Recording for {RECORD_SECONDS} seconds...")
-                
-                # Record audio
-                num_chunks = math.ceil(RATE / CHUNK * RECORD_SECONDS)
-                for i in range(num_chunks):
-                    if not RECORDING:
-                        print("Recording stopped early")
-                        break
-                    try:
-                        data = stream.read(CHUNK, exception_on_overflow=False)
-                        data_int16 = np.frombuffer(data, dtype=np.int16)
-                        all_audio_data.append(data_int16)
-                    except Exception as e:
-                        print(f"Error reading audio chunk: {e}")
-                        break
-                
-                if stream:
-                    stream.stop_stream()
-                    stream.close()
-                    stream = None
-                
-                if len(all_audio_data) == 0:
-                    print("No audio data recorded")
-                    RECORDING = False
-                    continue
-                
-                print(f"Processing audio with {current_effect} effect...")
-                
-                # Concatenate all audio data
-                audio_array = np.concatenate(all_audio_data)
-                del all_audio_data  # Free memory
-                gc.collect()
-                
-                # Apply selected effect
-                if current_effect == 'pitch':
-                    processed_audio = apply_pitch_shift(audio_array, pitch_shift_factor)
-                    print(f"Applied pitch shift: {pitch_shift_factor:.1f}")
-                elif current_effect == 'echo':
-                    processed_audio = apply_echo(audio_array, delay_ms=250, decay=0.4)
-                    print("Applied echo effect")
-                elif current_effect == 'reverb':
-                    processed_audio = apply_reverb(audio_array, num_echoes=3)
-                    print("Applied reverb effect")
-                else:
-                    processed_audio = audio_array
-                
-                del audio_array  # Free memory
-                gc.collect()
-                
-                # Split back into chunks for playback
-                Recordframes = []
-                for i in range(0, len(processed_audio), CHUNK):
-                    chunk = processed_audio[i:i+CHUNK]
-                    if len(chunk) < CHUNK:
-                        chunk = np.pad(chunk, (0, CHUNK - len(chunk)), 'constant')
-                    chunk_out = struct.pack("%dh" % len(chunk), *list(chunk))
-                    Recordframes.append(chunk_out)
-                
-                del processed_audio  # Free memory
-                gc.collect()
-                
-                print("Playing back processed audio...")
-                
-                # Open output stream
-                out_stream = audio.open(
-                    format=FORMAT,
-                    channels=CHANNELS,
-                    rate=RATE,
-                    output=True,
-                    output_device_index=output_index,
-                    frames_per_buffer=CHUNK
-                )
-                
-                # Play all frames
-                for frame in Recordframes:
-                    out_stream.write(frame)
-                
-                if out_stream:
-                    out_stream.stop_stream()
-                    out_stream.close()
-                    out_stream = None
-                
-                del Recordframes
-                gc.collect()
-                
-                print("Playback finished\n")
-                
-            except MemoryError as e:
-                print(f"MEMORY ERROR: {e}")
-            except Exception as e:
-                print("Error during recording/playback: {e}")
-                import traceback
-                traceback.print_exc()
-            finally:
-                if stream:
-                    try:
-                        stream.stop_stream()
-                        stream.close()
-                    except:
-                        pass
-                if out_stream:
-                    try:
-                        out_stream.stop_stream()
-                        out_stream.close()
-                    except:
-                        pass
-                RECORDING = False
-                gc.collect()
-        
-        else:
-            time.sleep(0.1)
-    
-    audio.terminate()
-    print("Audio system terminated")
-
-        </code></pre>
-          <b>mode3.py</b>
-          <pre><code>
-import pygame
-from pygame.locals import *
-import os
-import time
-import subprocess
-import math
-import random
-import RPi.GPIO as GPIO
-from time import sleep
-
-import pyaudio
-import wave
-import sys
-import numpy as np
-import librosa  # Added for pitch detection
-from scipy import signal
-import draw_utils
-import struct
-import gc
-
-running = False
-SCREEN_WIDTH = 320
-SCREEN_HEIGHT = 240
-BLACK = (0, 0, 0)
-DARK_BLUE = (10, 10, 40)
-CYAN = (0, 255, 255)
-MAGENTA = (255, 0, 255)
-YELLOW = (255, 255, 0)
-GREEN = (0, 255, 0)
-WHITE = (255, 255, 255)
-DARK_BG = (5, 5, 20)
-RED = (255, 0, 0)
-    
-surface = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
-
-font_big = pygame.font.Font(None, 30)
-font_small = pygame.font.Font(None, 20)
-font_huge = pygame.font.Font(None, 50)
-
-pygame.mouse.set_visible(False)
-
-RECORDING = False
-FORMAT = pyaudio.paInt16
-CHANNELS = 1
-RATE = 44100
-CHUNK = 4096  # Larger chunk for better frequency resolution
-
-# Pitch detection data
-current_frequency = 0.0
-detected_note = "--"
-note_names = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
-
-
-class NeonRect:
-    def __init__(self, x, y, width, height,
-                 fill_color,
-                 border_color,
-                 glow_thickness=4):
-        self.rect = pygame.Rect(x, y, width, height)
-        self.fill_rect = pygame.Rect(x+6, y+6, width - 13, height - 13)
-        self.fill_color = fill_color
-        self.border_color = border_color
-        self.glow_border = draw_utils.render_neon_border(
-            border_color, width, height, glow_thickness
-        )
-
-    def draw(self, surface):
-        surface.blit(self.glow_border, (self.rect.x, self.rect.y))
-        pygame.draw.rect(surface, self.fill_color, self.fill_rect)
-
-
-# Three button layout
-buttons = {
-    'Frequency': NeonRect(5, 41, 100, 159, (20, 20, 40), CYAN),
-    'Note': NeonRect(110, 41, 100, 159, (20, 20, 40), MAGENTA),
-    'Record': NeonRect(215, 41, 100, 159, (20, 20, 40), GREEN)
-}
-
-
-def frequency_to_note(freq):
-    """Convert frequency in Hz to musical note name using librosa method"""
-    if freq <= 0:
-        return "--", 0
-    
-    # A4 = 440 Hz is our reference
-    # Calculate semitones from A4
-    # The 12 represents the 12 semitones (half-steps) in an octave
-    semitones_from_a4 = 12 * np.log2(freq / 440.0)
-    
-    # Round to nearest semitone to get the note
-    note_number = round(semitones_from_a4)
-    
-    # Convert to absolute note position (C0 = 0)
-    # A4 is at index 9 (A), octave 4
-    # So A4 in absolute terms: 4 * 12 + 9 = 57
-    absolute_note = note_number + 57 - 2  # Subtract 2 to shift down
-    
-    # Calculate octave and note index
-    octave = absolute_note // 12
-    note_index = absolute_note % 12
-    
-    return f"{note_names[note_index]}{octave}", note_index
-
-
-def detect_pitch(audio_data):
-    """Detect pitch using librosa's piptrack method"""
-    # Convert to float normalized to [-1, 1]
-    audio_float = audio_data.astype(np.float32) / 32768.0
-    
-    try:
-        # Use librosa's piptrack for pitch detection
-        pitches, magnitudes = librosa.piptrack(
-            y=audio_float, 
-            sr=RATE, 
-            fmin=50,      # Minimum frequency (Hz)
-            fmax=2000,    # Maximum frequency (Hz)
-            threshold=0.1 # Magnitude threshold
-        )
-        
-        # Get the pitch with highest magnitude
-        max_mag_index = np.argmax(magnitudes)
-        pitch = pitches.flatten()[max_mag_index]
-        magnitude = magnitudes.flatten()[max_mag_index]
-        
-        # Only return if we detected a strong enough signal
-        if pitch > 0 and magnitude > 0.1:
-            return pitch
-        else:
-            return 0.0
-            
-    except Exception as e:
-        print(f"Error in pitch detection: {e}")
-        return 0.0
-
-
-def draw_pitch_display():
-    global current_frequency, detected_note, RECORDING
-    
-    surface.fill(DARK_BG)
-    
-    # Draw title
-    title_text = font_big.render('Pitch Detector', True, WHITE)
-    title_rect = title_text.get_rect(center=(160, 20))
-    surface.blit(title_text, title_rect)
-    
-    # Draw buttons
-    for button in buttons.values():
-        button.draw(surface)
-    
-    # Button labels
-    button_labels = {
-        'FREQUENCY': (55, 90),
-        'Hz': (55, 125),
-        'NOTE': (160, 90),
-        'NAME': (160, 125),
-        'RECORD': (265, 90),
-        'STOP' if RECORDING else 'START': (265, 125)
-    }
-    
-    for label, pos in button_labels.items():
-        text = font_small.render(label, True, WHITE)
-        rect = text.get_rect(center=pos)
-        surface.blit(text, rect)
-    
-    # Display current frequency in left box
-    freq_display = f"{current_frequency:.1f}" if current_frequency > 0 else "--"
-    freq_text = font_big.render(freq_display, True, CYAN)
-    freq_rect = freq_text.get_rect(center=(55, 155))
-    surface.blit(freq_text, freq_rect)
-    
-    # Display detected note in middle box
-    note_text = font_huge.render(detected_note, True, MAGENTA)
-    note_rect = note_text.get_rect(center=(160, 155))
-    surface.blit(note_text, note_rect)
-    
-    # Status indicator at bottom
-    status = 'LISTENING...' if RECORDING else 'READY'
-    status_color = RED if RECORDING else GREEN
-    status_text = font_small.render(status, True, status_color)
-    status_rect = status_text.get_rect(center=(160, 220))
-    surface.blit(status_text, status_rect)
-
-
-def draw():
-    draw_pitch_display()
-    
-    for event in pygame.event.get():
-        if event.type == MOUSEBUTTONDOWN:
-            x, y = pygame.mouse.get_pos()
-        elif event.type == MOUSEBUTTONUP:
-            x, y = pygame.mouse.get_pos()
-            print(f"Click at ({x}, {y})")
-            
-            # Check if click is in button area
-            if 40 < y < 200:
-                # Record/Stop button (right)
-                if 215 < x < 315:
-                    global RECORDING
-                    RECORDING = not RECORDING
-                    print(f"RECORDING: {RECORDING}")
-            elif y > 200:
-                print("Bottom area clicked - could exit here")
-
-
-def mode_logic():
-    pass
-
-
-def start_mode():
-    global running, RECORDING, current_frequency, detected_note
-    
-    print("Pitch Detector mode initialized (using librosa)")
-    
-    audio = pyaudio.PyAudio()
-    
-    def find_usb_mic():
-        """Find USB microphone device index"""
-        print("----Available Recording Devices----")
-        target_name = "USB"  # Target USB microphone
-        target_device_index = None
-        
-        for i in range(audio.get_device_count()):
-            dev_info = audio.get_device_info_by_index(i)
-            if dev_info.get('maxInputChannels') > 0:
-                name = dev_info.get('name')
-                print(f"[{i}] {name} (inputs={dev_info.get('maxInputChannels')})")
-                
-                # Auto-match device by substring
-                if target_name.lower() in name.lower():
-                    target_device_index = i
-                    print(f"  -> Auto-matched USB device")
-        
-        print("--------------------------------------------")
-        
-        if target_device_index is not None:
-            print(f"Auto-selected device: {target_device_index}")
-            return target_device_index
-        
-        # Fallback: use first available input device
-        for i in range(audio.get_device_count()):
-            if audio.get_device_info_by_index(0, i).get('maxInputChannels') > 0:
-                print(f"Using fallback input device at index {i}")
-                return i
-        
-        return None
-    
-    # Find microphone
-    input_index = find_usb_mic()
-    
-    if input_index is None:
-        print("Error: Could not find suitable audio input device!")
-        audio.terminate()
-        running = False
-        return
-    
-    print(f"Pitch Detector Ready (librosa piptrack)")
-    print(f"Input device: {input_index}")
-    
-    stream = None
-    
-    try:
-        # Open input stream
-        stream = audio.open(
-            format=FORMAT,
-            channels=CHANNELS,
-            rate=RATE,
-            input=True,
-            input_device_index=input_index,
-            frames_per_buffer=CHUNK
-        )
-        
-        print("Stream opened, starting pitch detection...")
-        
-        while running:
-            if RECORDING:
-                try:
-                    # Read audio data
-                    data = stream.read(CHUNK, exception_on_overflow=False)
-                    audio_data = np.frombuffer(data, dtype=np.int16)
-                    
-                    # Detect pitch using librosa
-                    frequency = detect_pitch(audio_data)
-                    
-                    # Update global variables for display
-                    if frequency > 0 and 50 < frequency < 2000:  # Valid vocal range
-                        current_frequency = frequency
-                        detected_note, _ = frequency_to_note(frequency)
-                        print(f"Detected: {frequency:.2f} Hz -> {detected_note}")
-                    else:
-                        current_frequency = 0.0
-                        detected_note = "--"
-                    
-                except Exception as e:
-                    print(f"Error reading audio: {e}")
-                    time.sleep(0.01)
-            else:
-                # Not recording - reset display
-                current_frequency = 0.0
-                detected_note = "--"
-                time.sleep(0.05)
-        
-    except Exception as e:
-        print(f"Error in pitch detection: {e}")
-        import traceback
-        traceback.print_exc()
-    
-    finally:
-        if stream:
-            try:
-                stream.stop_stream()
-                stream.close()
-            except:
-                pass
-        audio.terminate()
-        print("Pitch detector terminated")
-
-        </code></pre>
-          <b>draw_utils.py</b>
-          <pre><code>
-import random
-import pygame
-from PIL import Image, ImageDraw, ImageFilter, ImageEnhance
-
-def render_neon_border(color, width, height, thickness):
-  img = Image.new("RGBA", (width, height), (0, 0, 0, 0))
-  draw = ImageDraw.Draw(img)
-  draw.rectangle(
-    (thickness // 2, thickness // 2, width - thickness, height - thickness),
-    fill=(0, 0, 0, 255),
-    outline=(color[0], color[1], color[2], 255),
-    width=thickness
-  )
-  blur_radius = 2
-  glow = img.filter(ImageFilter.GaussianBlur(blur_radius))
-  enhancer = ImageEnhance.Brightness(glow)
-  glow = enhancer.enhance(1.5)
-  draw_glow = ImageDraw.Draw(glow)
-  draw_glow.rectangle(
-    (thickness // 4 * 3, thickness // 4 * 3, width - (thickness // 2 * 3), height - (thickness // 2 * 3)),
-    outline=(color[0], color[1], color[2], 255),
-    width=thickness // 2,
-  )
-  return pygame.image.fromstring(glow.tobytes(), glow.size, glow.mode).convert_alpha()
-
-class Star:
-  def __init__(self):
-    self.x = random.randint(0, 320)
-    self.y = random.randint(0, 240)
-    self.speed = random.uniform(0.5, 2.5)
-    self.size = random.randint(1, 3)
-    self.brightness = random.randint(100, 255)
-      
-  def update(self):
-    self.y += self.speed
-    if self.y > 240 + self.size:
-      self.y = 0
-      self.x = random.randint(0, 320)
-  
-  def draw(self, surface):
-    color = (self.brightness, self.brightness, self.brightness)
-    pygame.draw.circle(surface, color, (int(self.x), int(self.y)), self.size)
-
-        </code></pre>
-          <b>audio_thread.py</b>
-          <pre><code>
-import math
-import pyaudio
-import threading
-import time
-
-import numpy as np
-
-from collections import deque
-
-FORMAT = pyaudio.paInt16
-CHANNELS = 1
-RATE = 44100
-CHUNK = 4096
-
-def find_usb_mic(p):
-  """Find USB microphone device index"""
-  info = p.get_host_api_info_by_index(0)
-  numdevices = info.get('deviceCount')
-  
-  for i in range(numdevices):
-    dev_info = p.get_device_info_by_host_api_device_index(0, i)
-    if dev_info.get('maxInputChannels') > 0:
-      name = dev_info.get('name')
-      if 'USB' in name or 'usb' in name:
-        print(f"Found USB mic at index {i}: {name}")
-        return i
-  
-  for i in range(numdevices):
-    if p.get_device_info_by_host_api_device_index(0, i).get('maxInputChannels') > 0:
-      name = p.get_device_info_by_host_api_device_index(0, i).get('name')
-      print(f"Using input device at index {i}: {name}")
-      return i
-  
-  return None
-
-class MicrophoneThread:
-  """
-  A dedicated thread for listening to audio
-  """
-  def __init__(self, recording_window=None):
-    self._pa = pyaudio.PyAudio()
-    self._stream = self._pa.open(
-      format=FORMAT,
-      channels=CHANNELS,
-      rate=RATE,
-      input=True,
-      input_device_index=find_usb_mic(self._pa),
-      frames_per_buffer=CHUNK,
-      stream_callback=self._callback,
-      start=False,
-    )
-    self._recording_window = recording_window
-    self._running = True
-    self._recording = False
-    self._create_buffer()
-    self._lock = threading.Lock()
-    self._stream.start_stream()
-
-  def _create_buffer(self):
-    if self._recording_window is None:
-      self._buffer = deque()
-    else:
-      self._buffer = deque(maxlen=math.ceil(RATE / CHUNK * self._recording_window))
-
-  def clear_buffer(self):
-    with self._lock:
-      self._buffer.clear()
-
-  def get_buffer(self):
-    with self._lock:
-      return b"".join(self._buffer)
-  
-  def get_recorded_time(self):
-    with self._lock:
-      return len(self._buffer) * CHUNK / RATE
-  
-  def set_recording_window(self, window):
-    with self._lock:
-      if self._recording_window == window:
-        return
-      data = list(self._buffer)
-      self._recording_window = window
-      self._create_buffer()
-      for chunk in data:
-        self._buffer.append(chunk)
-
-  def start_recording(self):
-    with self._lock:
-      self._recording = True
-
-  def stop_recording(self):
-    with self._lock:
-      self._recording = False
-
-  def terminate(self):
-    with self._lock:
-      self._running = False
-      self._recording = False
-    self._stream.stop_stream()
-    self._stream.close()
-    self._pa.terminate()
-
-  def _callback(self, in_data, frame_count, time_info, status):
-    # print(in_data, frame_count, time_info, status)
-    if status & pyaudio.paInputOverflow:
-      print("OVERFLOW")
-      return (None, pyaudio.paContinue)
-    with self._lock:
-      if not self._running:
-        return (None, pyaudio.paAbort)
-      if self._recording:
-        self._buffer.append(in_data)
-    return (None, pyaudio.paContinue)
-
-    </section>
-
-    <section id="distr">
-      <hr />
-      <div class="row text-center">
-        <h2>Work Distribution</h2>
-        <p style="text-align: left; padding: 0px 30px">
-          We achieved an even split of work on the final project. In the first couple weeks, development was done
-          individually as we both needed to research and test code for each mode. Nearing weeks 3-4, collaborative
-          development integrated our mode logic onto the Pi and implemented the main menu and switching system.
-        </p>
-        <p style="text-align: left; padding: 0px 30px">
-          <strong>Daniel Wahab (dow26):</strong> Implemented Modes 2 and 3, including all GUI displays and audio
-          processing logic. Developed the pitch shifting, echo, and reverb algorithms. Created the pitch detection
-          system using librosa. Handled memory optimization and audio device management.
-        </p>
-        <p style="text-align: left; padding: 0px 30px">
-          <strong>Nagaa Dhaba (nd435):</strong> Implemented Mode 1 with song detection and fingerprinting. Designed the
-          main menu, splash screen, and mode switching architecture. Developed the multi-threaded framework and
-          rendering system. Created the neon UI elements and animations.
-        </p>
-        <p style="text-align: left; padding: 0px 30px">
-          Both members contributed equally to testing, debugging, and documentation. The modular design allowed parallel
-          development while maintaining system integration throughout the project.
-        </p>
+  del(pitft)</code></pre>
+
+          <p style="margin-top: 20px"><em>Full code for mode1.py, mode2.py, mode3.py, draw_utils.py, and audio_thread.py
+              available in source files.</em></p>
+        </div>
       </div>
     </section>
 
-    <hr />
-    <footer style="text-align: center; padding: 20px 0;">
-      <p>&copy; 2025 Daniel Wahab & Nagaa Dhaba - Cornell University ECE 3140</p>
-    </footer>
-  </div>
-
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-</body>
-
-</html>
+    <section id="di
