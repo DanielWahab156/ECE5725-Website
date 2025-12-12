@@ -199,18 +199,15 @@
           while still maintaining a high level of accuracy.
         </p>
 
-        <h3>Vocal Modulation</h3>
-        <p>
-          Implements real-time audio effects including pitch shifting (0.5x to 1.5x), echo (250ms delay with decay), and
-          reverb (multiple delayed echoes). Uses scipy's signal processing for pitch modification and custom algorithms
-          for temporal effects.
-        </p>
-
         <h3>Pitch Detection</h3>
         <p>
-          Utilizes librosa's piptrack method for accurate pitch detection. Converts detected frequencies to musical
-          notes (C-B across octaves) and displays both Hz and note name in real-time. Optimized for vocal frequency
-          range (50-2000 Hz).
+          For our third mode, we added digital signal processing using the librosa library. We used librosa.piptrack to
+          analyze the live audio stream,
+          which returns pitch and magnitude estimation for each audio frame. From these values, we selected the
+          strongest frequency as the detected pitch.
+          We then mapped this pitch to a musical note by using A4 = 440 Hz as our reference. We then calculated how many
+          semitones the detected frequency
+          is from A4. This let us identify and display the closest musical note in real time.
         </p>
       </div>
     </section>
